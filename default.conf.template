@@ -1,3 +1,10 @@
+#redirect http requests
+server {
+  listen 80;
+  server_name tv.lupton.io www.tv.lupton.io;
+  return 301 https://tv.lupton.io$request_uri;
+}
+
 server {
   listen $PORT default_server;
   root   /usr/share/nginx/html;
