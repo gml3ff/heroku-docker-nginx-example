@@ -1,5 +1,20 @@
-<html>
+<div class="index">
+  <template class="index__mobile">
 
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="css/player_mobile.css">
+</head>
+
+<body style="background-color: black;">
+<div style="width:100%; height:100%; top:0px; left:0px; position: fixed;">
+  <img src="images/mobile_tv.png" class="tvpic"/>
+</div>
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/AY3R03oLbtk?autoplay=1?wmode=opaque" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</body>
+
+  </template>
+  <template class="index__desktop">
 <head>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="css/player_window.css">
@@ -11,3 +26,22 @@
 </div>
   <iframe width="560" height="315" src="https://www.youtube.com/embed/AY3R03oLbtk?autoplay=1?wmode=opaque" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </body>
+
+  </template>
+  <script>
+    var width = screen.width;
+    var height = screen.height;
+    var isMobile = false;
+ 
+    if (height > width) {
+      isMobile = true;
+    }
+    
+    const index = document.currentScript.closest('.index');
+    const content = index
+      .querySelector(isMobile ? '.index__mobile' : '.index__desktop')
+      .content;
+    
+    index.appendChild(document.importNode(content, true));
+  </script>
+</div> 

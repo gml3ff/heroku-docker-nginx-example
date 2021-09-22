@@ -27,14 +27,6 @@ server {
     try_files $uri $uri/ /previous.html;
  }
 
- location /mobile {
-    try_files $uri $uri/ /mobile.html;
- }
-
- location /newest-mobile {
-    try_files $uri $uri/ /newest-mobile.html;
- }
-
  location /archive {
     try_files $uri $uri/ /archive.html;
  }
