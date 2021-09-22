@@ -27,6 +27,9 @@ server {
     try_files $uri $uri/ /previous.html;
  }
 
+ location /mobile {
+    try_files $uri $uri/ /mobile.html;
+ }
 
  location /archive {
     try_files $uri $uri/ /archive.html;
