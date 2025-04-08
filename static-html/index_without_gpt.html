@@ -1,0 +1,104 @@
+<div class="index">
+  <template class="index__mobile">
+
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="css/mobile-style.css">
+</head>
+
+<body>
+<div style="width:100%; height:100%; top:0px; left:0px; position: fixed;">
+  <img rel="preload" src="images/mobile_tv.png" class="tvpic"/>
+</div>
+<div class="vhs-message">
+  <span>
+<!--    <h1>PAUSE</h1> -->
+    <br>
+    <br>
+    <br>
+    <br>
+    <h3><a href="/newest">newest</a></h3>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <h3><a href="/previous">previous</a></h3>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <h3><a href="/archive">archive</a></h3>
+  </span>  
+</div>
+
+
+
+<div class="screen-bottom">
+    <div class="line">
+        <div class="red"></div>
+        <div class="white"></div>
+        <div class="green"></div>
+    </div>
+</div>
+</body>
+
+
+  </template>
+  <template class="index__desktop">
+
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="../css/style.css">
+</head>
+
+<body>
+<div style="width:100%; height:100%; top:0px; left:0px; position: fixed;">
+  <img rel="preload" src="../images/tv_with_cover.png" class="tv-foreground"/>
+</div>
+<div class="vhs-message">
+  <span>
+    <h1>PAUSE</h1>
+    <br>
+    <br>
+    <br>
+    <br>
+    <h2><a href="/newest">newest episode</a></h2>
+    <br>
+    <h3><a href="/previous">last episode</a></h3>
+    <br>
+    <h3><a href="/archive">archive</a></h3>
+  </span>  
+</div>
+
+
+
+<div class="screen-bottom">
+    <div class="line">
+        <div class="red"></div>
+        <div class="white"></div>
+        <div class="green"></div>
+    </div>
+</div>
+</body>
+
+
+  </template>
+  <script>
+    var width = screen.width;
+    var height = screen.height;
+    var isMobile = false;
+ 
+    if (height > width) {
+      isMobile = true;
+    }
+    
+    const index = document.currentScript.closest('.index');
+    const content = index
+      .querySelector(isMobile ? '.index__mobile' : '.index__desktop')
+      .content;
+    
+    index.appendChild(document.importNode(content, true));
+  </script>
+</div> 
