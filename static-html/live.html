@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Live Stream Player</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
+<style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .tv-container {
+      position: relative;
+      width: 100vw;
+      max-width: 100vw;
+      aspect-ratio: 1114 / 699;
+      background-image: url('../images/tv_with_cover.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .video-container {
+      position: absolute;
+      /* preserving old values in case I need them
+      top: 155px;
+      left: 241px;
+      width: 456px;
+      height: 332px;*/
+      
+      top: 80px;
+      left: 135px;
+      width: 675px;
+      height:470px;
+      /* These values match the TV screen hole from the original 1114x699 image */
+      transform-origin: top left;
+    }
+
+    #ytplayer {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Scale the video-container proportionally */
+    .scale-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1114px;
+      height: 699px;
+      transform-origin: top left;
+      transform: scale(var(--scale));
+    }
+  
+    .tv-foreground {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+    </style>
+</head>
+<body>
+<div class="tv-container" id="tvContainer">
+<div class="scale-wrapper" id="scaleWrapper">
+<div class="video-container">
+<div id="ytplayer"></div>
+</div>
+</div>
+<img alt="TV frame" class="tv-foreground" src="../images/tv_with_cover.png"/></div>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+    function updateScale() {
+      const container = document.getElementById('tvContainer');
+      const scaleWrapper = document.getElementById('scaleWrapper');
+
+      const targetWidth = 1114;
+      const actualWidth = container.clientWidth;
+      const scale = actualWidth / targetWidth;
+
+      scaleWrapper.style.setProperty('--scale', scale);
+    }
+
+    window.addEventListener('resize', updateScale);
+    window.addEventListener('load', updateScale);
+
+    let player;
+
+    function onYouTubeIframeAPIReady() {
+      const currentTime = new Date();
+      const currentHours = currentTime.getUTCHours();
+      const currentMinutes = currentTime.getUTCMinutes();
+      const currentSeconds = currentTime.getUTCSeconds();
+
+      const totalMinutes = currentHours * 60 + currentMinutes;
+      const startMinutes = 4 * 60 + 30;
+      const slotDuration = 90;
+      let diff = totalMinutes - startMinutes;
+      if (diff < 0) diff += 24 * 60;
+
+      const slot = Math.floor(diff / slotDuration);
+
+      const videoIds = [
+        "9L0awdHkPnQ", "eCtVDGgVx90", "Hp1mOr_yFgs", "dHAr1JK8gxk",
+        "5ZLA5_8ubug", "vfnFjqnRDSo", "zE0f0e2359M", "Q1ivDVHOa_c",
+        "AY3R03oLbtk", "dmKmr3Wom38", "ULV4I22rey4", "r-KDJvb8Zs4",
+        "Cr2-7wgh9Lo", "a2TYbFD07qM", "LgiJdjnrX8U", "H38xy-zl21M"
+      ];
+
+      if (slot >= 0 && slot < videoIds.length) {
+        const baselineSeconds = 4 * 3600 + 30 * 60 + slot * slotDuration * 60;
+        const currentTotalSeconds = currentHours * 3600 + currentMinutes * 60 + currentSeconds;
+        let diffInSeconds = currentTotalSeconds - baselineSeconds;
+        if (diffInSeconds < 0) diffInSeconds += 86400;
+
+        player = new YT.Player('ytplayer', {
+          videoId: videoIds[slot],
+          playerVars: {
+            autoplay: 1,
+            controls: 0,
+            modestbranding: 0,
+            rel: 0
+          },
+          events: {
+            'onReady': function (event) {
+              event.target.seekTo(diffInSeconds, true);
+            }
+          }
+        });
+      } else {
+        document.getElementById('ytplayer').innerHTML =
+          `<p style="color:white; font-family: monospace;">No content scheduled for this time.</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
