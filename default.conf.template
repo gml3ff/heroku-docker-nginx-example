@@ -27,8 +27,8 @@ server {
     try_files $uri $uri/ /random.html;
  }
 
- location /instructions {
-    try_files $uri $uri/ /instructions.html;
+ location /about {
+    try_files $uri $uri/ /about.html;
  }
 
  # location /live {
