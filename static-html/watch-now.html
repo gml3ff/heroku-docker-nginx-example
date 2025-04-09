@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
   <title>watch now</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon_io/favicon.ico">
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="../images/tv_with_cover.png"> <!-- Preload image -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+
   <style>
-    html,
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       height: 100vh;
@@ -34,18 +33,17 @@
 
     .video-container {
       position: absolute;
-      /* preserving old values in case I need them
-      top: 155px;
-      left: 241px;
-      width: 456px;
-      height: 332px;*/
-
       top: 80px;
       left: 135px;
       width: 675px;
       height: 470px;
-      /* These values match the TV screen hole from the original 1114x699 image */
       transform-origin: top left;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .video-container.visible {
+      opacity: 1;
     }
 
     #ytplayer {
@@ -54,7 +52,6 @@
       border: none;
     }
 
-    /* Scale the video-container proportionally */
     .scale-wrapper {
       position: absolute;
       top: 0;
@@ -74,223 +71,27 @@
       pointer-events: none;
       z-index: 10;
     }
-
-    //From Greg Opperman
-    //https://codepen.io/gopperman/pen/dElzr?editors=001
-    @keyframes track {
-
-      40% {
-        opacity: 1;
-        top: 0;
-        left: 0;
-        transform: scale(1, 1);
-        transform: skew(0, 0);
-      }
-
-      41% {
-        opacity: 0.8;
-        top: 0px;
-        left: -1px;
-        transform: scale(1, 1.2);
-        transform: skew(50deg, 0);
-      }
-
-      42% {
-        opacity: 0.8;
-        top: 0px;
-        left: 1px;
-        transform: scale(1, 1.2);
-        transform: skew(-80deg, 0);
-      }
-
-      43% {
-        opacity: 1;
-        top: 0;
-        left: 0;
-        transform: scale(1, 1);
-        transform: skew(0, 0);
-      }
-    }
-
-
-
-    //Lines
-    .screen-bottom {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-    }
-
-    .line {
-      padding-left: 21%;
-      width: 42%;
-      height: 3px;
-      position: relative;
-      -webkit-animation: appear 1s infinite, flick 1s infinite, big-jump 5ms infinite;
-      animation: appear 1s infinite, flick 1s infinite, big-jump 5ms infinite;
-    }
-
-    .line .white {
-      background: white;
-      position: relative;
-      top: 0;
-      left: 0;
-      height: 4px;
-    }
-
-    .line .red {
-      background: red;
-      position: relative;
-      top: 0;
-      left: 0;
-      height: 1px;
-    }
-
-    .line .green {
-      background: green;
-      position: relative;
-      top: 0;
-      left: 0;
-      height: 1px;
-    }
-
-    @-webkit-keyframes appear {
-      0% {
-        -webkit-filter: blur(5px);
-        filter: blur(5px);
-        opacity: 0.85;
-      }
-
-      50% {
-        -webkit-filter: blur(3px);
-        filter: blur(3px);
-        opacity: 0.85;
-      }
-
-      100% {
-        -webkit-filter: blur(4px);
-        filter: blur(4px);
-        opacity: 0.85;
-      }
-    }
-
-    @keyframes appear {
-      0% {
-        -webkit-filter: blur(5px);
-        filter: blur(5px);
-        opacity: 0.85;
-      }
-
-      50% {
-        -webkit-filter: blur(3px);
-        filter: blur(3px);
-        opacity: 0.85;
-      }
-
-      100% {
-        -webkit-filter: blur(4px);
-        filter: blur(4px);
-        opacity: 0.85;
-      }
-    }
-
-    @-webkit-keyframes big-jump {
-      0% {
-        top: 0;
-      }
-
-      10% {
-        top: -10px;
-      }
-
-      12% {
-        top: 0;
-      }
-
-      54% {
-        top: 0;
-      }
-
-      55% {
-        top: -30px;
-      }
-
-      56% {
-        top: 0;
-      }
-
-      86% {
-        top: 0;
-      }
-
-      87% {
-        top: -60px;
-      }
-
-      88% {
-        top: 0;
-      }
-    }
-
-    @keyframes big-jump {
-      0% {
-        top: 0;
-      }
-
-      10% {
-        top: -10px;
-      }
-
-      12% {
-        top: 0;
-      }
-
-      54% {
-        top: 0;
-      }
-
-      55% {
-        top: -30px;
-      }
-
-      56% {
-        top: 0;
-      }
-
-      86% {
-        top: 0;
-      }
-
-      87% {
-        top: -60px;
-      }
-
-      88% {
-        top: 0;
-      }
-    }
   </style>
 </head>
-
 <body>
   <div class="tv-container" id="tvContainer">
     <div class="scale-wrapper" id="scaleWrapper">
-      <div class="video-container">
-        <div id="ytplayer"></div>
+      <div class="video-container" id="videoContainer">
+        <div id="ytplayer" loading="lazy"></div>
       </div>
     </div>
     <img alt="TV frame" class="tv-foreground" src="../images/tv_with_cover.png" />
   </div>
-  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <!-- Defer YouTube script to load after initial render -->
+  <script defer src="https://www.youtube.com/iframe_api"></script>
   <script>
     function updateScale() {
       const container = document.getElementById('tvContainer');
       const scaleWrapper = document.getElementById('scaleWrapper');
-
       const targetWidth = 1114;
       const actualWidth = container.clientWidth;
       const scale = actualWidth / targetWidth;
-
       scaleWrapper.style.setProperty('--scale', scale);
     }
 
@@ -298,77 +99,90 @@
     window.addEventListener('load', updateScale);
 
     let player;
+    let currentSlot = null;
+    let pauseTimestamp = null;
+
+    const slotDurationSeconds = 90 * 60;
+    const slotStartUTC = 4 * 3600;
+    const videoIds = [
+      "9L0awdHkPnQ", "eCtVDGgVx90", "Hp1mOr_yFgs", "dHAr1JK8gxk",
+      "5ZLA5_8ubug", "vfnFjqnRDSo", "zE0f0e2359M", "Q1ivDVHOa_c",
+      "AY3R03oLbtk", "dmKmr3Wom38", "ULV4I22rey4", "r-KDJvb8Zs4",
+      "Cr2-7wgh9Lo", "a2TYbFD07qM", "LgiJdjnrX8U", "H38xy-zl21M"
+    ];
+
+    function getCurrentUTCTimeInSeconds() {
+      const now = new Date();
+      return now.getUTCHours() * 3600 + now.getUTCMinutes() * 60 + now.getUTCSeconds();
+    }
+
+    function getSlotInfo() {
+      let now = getCurrentUTCTimeInSeconds();
+      let diff = now - slotStartUTC;
+      if (diff < 0) diff += 86400;
+      const slot = Math.floor(diff / slotDurationSeconds);
+      const offset = diff % slotDurationSeconds;
+      return { slot, offset };
+    }
+
+    function loadVideoAtSlot(slot, offset = 0) {
+      currentSlot = slot;
+      player.loadVideoById({
+        videoId: videoIds[slot % videoIds.length],
+        startSeconds: offset
+      });
+    }
 
     function onYouTubeIframeAPIReady() {
-  const currentTime = new Date();
-  const currentHours = currentTime.getUTCHours();
-  const currentMinutes = currentTime.getUTCMinutes();
-  const currentSeconds = currentTime.getUTCSeconds();
+      const { slot, offset } = getSlotInfo();
+      currentSlot = slot;
 
-  const totalMinutes = currentHours * 60 + currentMinutes;
-  const startMinutes = 4 * 60 + 30;
-  const slotDuration = 90;
-  let diff = totalMinutes - startMinutes;
-  if (diff < 0) diff += 24 * 60;
+      player = new YT.Player('ytplayer', {
+        videoId: videoIds[slot % videoIds.length],
+        playerVars: {
+          autoplay: 1,
+          controls: 0,
+          modestbranding: 0,
+          rel: 0,
+          fs: 0,
+          iv_load_policy: 3
+        },
+        events: {
+          onReady: function (event) {
+            event.target.seekTo(offset, true);
+            // Fade in iframe once ready
+            document.getElementById('videoContainer').classList.add('visible');
+          },
+          onStateChange: function (event) {
+            if (event.data === YT.PlayerState.PAUSED) {
+              pauseTimestamp = Date.now();
+            }
 
-  const slot = Math.floor(diff / slotDuration);
+            if (event.data === YT.PlayerState.PLAYING) {
+              const now = Date.now();
+              const currentReal = getSlotInfo();
 
-  const videoIds = [
-    "9L0awdHkPnQ", "eCtVDGgVx90", "Hp1mOr_yFgs", "dHAr1JK8gxk",
-    "5ZLA5_8ubug", "vfnFjqnRDSo", "zE0f0e2359M", "Q1ivDVHOa_c",
-    "AY3R03oLbtk", "dmKmr3Wom38", "ULV4I22rey4", "r-KDJvb8Zs4",
-    "Cr2-7wgh9Lo", "a2TYbFD07qM", "LgiJdjnrX8U", "H38xy-zl21M"
-  ];
+              if (pauseTimestamp !== null) {
+                const pausedDuration = Math.floor((now - pauseTimestamp) / 1000);
+                pauseTimestamp = null;
 
-  function loadVideoAtIndex(index, startSeconds = 0) {
-    player.loadVideoById({
-      videoId: videoIds[index],
-      startSeconds: startSeconds
-    });
-    setupTimeCheck(index);
-  }
+                const resumedSlotInfo = getSlotInfo();
 
-  function setupTimeCheck(currentIndex) {
-    clearInterval(window.playbackCheck);
-    window.playbackCheck = setInterval(() => {
-      if (player && player.getCurrentTime) {
-        const currentTime = player.getCurrentTime();
-        if (currentTime >= 5400) {
-          let nextIndex = (currentIndex + 1) % videoIds.length;
-          loadVideoAtIndex(nextIndex);
+                if (resumedSlotInfo.slot !== currentSlot) {
+                  loadVideoAtSlot(resumedSlotInfo.slot, resumedSlotInfo.offset);
+                } else {
+                  const newOffset = resumedSlotInfo.offset;
+                  const currentPlayback = player.getCurrentTime();
+                  if (Math.abs(currentPlayback - newOffset) > 2) {
+                    player.seekTo(newOffset, true);
+                  }
+                }
+              }
+            }
+          }
         }
-      }
-    }, 1000);
-  }
-
-  if (slot >= 0 && slot < videoIds.length) {
-    const baselineSeconds = 4 * 3600 + 30 * 60 + slot * slotDuration * 60;
-    const currentTotalSeconds = currentHours * 3600 + currentMinutes * 60 + currentSeconds;
-    let diffInSeconds = currentTotalSeconds - baselineSeconds;
-    if (diffInSeconds < 0) diffInSeconds += 86400;
-
-    player = new YT.Player('ytplayer', {
-      videoId: videoIds[slot],
-      playerVars: {
-        autoplay: 1,
-        controls: 0,
-        modestbranding: 0,
-        rel: 0
-      },
-      events: {
-        'onReady': function (event) {
-          event.target.seekTo(diffInSeconds, true);
-          setupTimeCheck(slot);
-        }
-      }
-    });
-  } else {
-    document.getElementById('ytplayer').innerHTML =
-      `<p style="color:white; font-family: monospace;">No content scheduled for this time.</p>`;
-  }
-}
-
+      });
+    }
   </script>
 </body>
-
 </html>
