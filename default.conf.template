@@ -23,8 +23,8 @@ server {
     try_files $uri $uri/ /watch-now.html;
  }
  
- location /random {
-    try_files $uri $uri/ /random.html;
+ location /tv-guide {
+    try_files $uri $uri/ /tv-guide.html;
  }
 
  location /about {
