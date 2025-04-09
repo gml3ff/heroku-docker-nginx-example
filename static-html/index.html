@@ -13,12 +13,20 @@
     html, body {
       margin: 0;
       padding: 0;
-      height: 100vh;
-      width: 100vw;
+      height: 100%;
+      width: 100%;
       overflow: hidden;
       background: black;
       font-family: 'Press Start 2P', cursive;
-      visibility: hidden; /* Hide until fonts + bg are ready */
+      visibility: hidden;
+    }
+
+    .page-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100vw;
     }
 
     .tv-container {
@@ -61,7 +69,6 @@
       align-items: center;
       text-align: center;
       animation: track 5ms infinite;
-      -webkit-animation: track 5ms infinite;
     }
 
     .vhs-message span {
@@ -152,27 +159,29 @@
 </head>
 
 <body>
-  <div class="tv-container" id="tvContainer">
-    <div class="scale-wrapper" id="scaleWrapper">
-      <div class="video-container">
-        <div class="vhs-message">
-          <span>
-            <h1>PAUSE</h1>
-            <div class="links-selector">
-              <h3><a href="/watch-now">watch now</a></h3>
-              <h3><a href="/random">random episode</a></h3>
-              <h3><a href="/instructions">instructions</a></h3>
-            </div>
-          </span>
-        </div>
-        <div class="line">
-          <div class="red"></div>
-          <div class="white"></div>
-          <div class="green"></div>
+  <div class="page-wrapper">
+    <div class="tv-container" id="tvContainer">
+      <div class="scale-wrapper" id="scaleWrapper">
+        <div class="video-container">
+          <div class="vhs-message">
+            <span>
+              <h1>PAUSE</h1>
+              <div class="links-selector">
+                <h3><a href="/watch-now">watch now</a></h3>
+                <h3><a href="/random">random episode</a></h3>
+                <h3><a href="/instructions">instructions</a></h3>
+              </div>
+            </span>
+          </div>
+          <div class="line">
+            <div class="red"></div>
+            <div class="white"></div>
+            <div class="green"></div>
+          </div>
         </div>
       </div>
+      <img alt="TV frame" class="tv-foreground" src="../images/tv_with_cover_lowopacity.png" />
     </div>
-    <img alt="TV frame" class="tv-foreground" src="../images/tv_with_cover_lowopacity.png" />
   </div>
 
   <script>
@@ -185,7 +194,6 @@
       scaleWrapper.style.setProperty('--scale', scale);
     }
 
-    // Wait until both the background image AND fonts are loaded
     async function waitForReady() {
       const font = new FontFace('Press Start 2P', 'url(https://fonts.gstatic.com/s/pressstart2p/v11/e3t4euO8T-267oIAQAu6jDQyKPRJ1_U.woff2)');
       try {
