@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <title>watch now</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon_io/favicon.ico">
-  <link rel="preload" as="image" href="../images/tv_with_cover.png"> <!-- Preload image -->
+  <link rel="preload" as="image" href="../images/tv_with_cover.png">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
 
   <style>
@@ -38,11 +38,13 @@
       width: 675px;
       height: 470px;
       transform-origin: top left;
+      visibility: hidden;
       opacity: 0;
       transition: opacity 0.5s ease;
     }
 
-    .video-container.visible {
+    .video-container.ready {
+      visibility: visible;
       opacity: 1;
     }
 
@@ -83,7 +85,6 @@
     <img alt="TV frame" class="tv-foreground" src="../images/tv_with_cover.png" />
   </div>
 
-  <!-- Defer YouTube script to load after initial render -->
   <script defer src="https://www.youtube.com/iframe_api"></script>
   <script>
     function updateScale() {
@@ -102,8 +103,8 @@
     let currentSlot = null;
     let pauseTimestamp = null;
 
-    const slotDurationSeconds = 90 * 60;
-    const slotStartUTC = 4 * 3600;
+    const slotDurationSeconds = 90 * 60; // 90 minutes
+    const slotStartUTC = 4 * 3600;       // 04:00 UTC start baseline
     const videoIds = [
       "9L0awdHkPnQ", "eCtVDGgVx90", "Hp1mOr_yFgs", "dHAr1JK8gxk",
       "5ZLA5_8ubug", "vfnFjqnRDSo", "zE0f0e2359M", "Q1ivDVHOa_c",
@@ -150,8 +151,12 @@
         events: {
           onReady: function (event) {
             event.target.seekTo(offset, true);
-            // Fade in iframe once ready
-            document.getElementById('videoContainer').classList.add('visible');
+
+            // Fade in once loaded and seeked
+            const container = document.getElementById('videoContainer');
+            requestAnimationFrame(() => {
+              container.classList.add('ready');
+            });
           },
           onStateChange: function (event) {
             if (event.data === YT.PlayerState.PAUSED) {
@@ -160,7 +165,6 @@
 
             if (event.data === YT.PlayerState.PLAYING) {
               const now = Date.now();
-              const currentReal = getSlotInfo();
 
               if (pauseTimestamp !== null) {
                 const pausedDuration = Math.floor((now - pauseTimestamp) / 1000);
