@@ -300,51 +300,74 @@
     let player;
 
     function onYouTubeIframeAPIReady() {
-      const currentTime = new Date();
-      const currentHours = currentTime.getUTCHours();
-      const currentMinutes = currentTime.getUTCMinutes();
-      const currentSeconds = currentTime.getUTCSeconds();
+  const currentTime = new Date();
+  const currentHours = currentTime.getUTCHours();
+  const currentMinutes = currentTime.getUTCMinutes();
+  const currentSeconds = currentTime.getUTCSeconds();
 
-      const totalMinutes = currentHours * 60 + currentMinutes;
-      const startMinutes = 4 * 60 + 30;
-      const slotDuration = 90;
-      let diff = totalMinutes - startMinutes;
-      if (diff < 0) diff += 24 * 60;
+  const totalMinutes = currentHours * 60 + currentMinutes;
+  const startMinutes = 4 * 60 + 30;
+  const slotDuration = 90;
+  let diff = totalMinutes - startMinutes;
+  if (diff < 0) diff += 24 * 60;
 
-      const slot = Math.floor(diff / slotDuration);
+  const slot = Math.floor(diff / slotDuration);
 
-      const videoIds = [
-        "9L0awdHkPnQ", "eCtVDGgVx90", "Hp1mOr_yFgs", "dHAr1JK8gxk",
-        "5ZLA5_8ubug", "vfnFjqnRDSo", "zE0f0e2359M", "Q1ivDVHOa_c",
-        "AY3R03oLbtk", "dmKmr3Wom38", "ULV4I22rey4", "r-KDJvb8Zs4",
-        "Cr2-7wgh9Lo", "a2TYbFD07qM", "LgiJdjnrX8U", "H38xy-zl21M"
-      ];
+  const videoIds = [
+    "9L0awdHkPnQ", "eCtVDGgVx90", "Hp1mOr_yFgs", "dHAr1JK8gxk",
+    "5ZLA5_8ubug", "vfnFjqnRDSo", "zE0f0e2359M", "Q1ivDVHOa_c",
+    "AY3R03oLbtk", "dmKmr3Wom38", "ULV4I22rey4", "r-KDJvb8Zs4",
+    "Cr2-7wgh9Lo", "a2TYbFD07qM", "LgiJdjnrX8U", "H38xy-zl21M"
+  ];
 
-      if (slot >= 0 && slot < videoIds.length) {
-        const baselineSeconds = 4 * 3600 + 30 * 60 + slot * slotDuration * 60;
-        const currentTotalSeconds = currentHours * 3600 + currentMinutes * 60 + currentSeconds;
-        let diffInSeconds = currentTotalSeconds - baselineSeconds;
-        if (diffInSeconds < 0) diffInSeconds += 86400;
+  function loadVideoAtIndex(index, startSeconds = 0) {
+    player.loadVideoById({
+      videoId: videoIds[index],
+      startSeconds: startSeconds
+    });
+    setupTimeCheck(index);
+  }
 
-        player = new YT.Player('ytplayer', {
-          videoId: videoIds[slot],
-          playerVars: {
-            autoplay: 1,
-            controls: 0,
-            modestbranding: 0,
-            rel: 0
-          },
-          events: {
-            'onReady': function (event) {
-              event.target.seekTo(diffInSeconds, true);
-            }
-          }
-        });
-      } else {
-        document.getElementById('ytplayer').innerHTML =
-          `<p style="color:white; font-family: monospace;">No content scheduled for this time.</p>`;
+  function setupTimeCheck(currentIndex) {
+    clearInterval(window.playbackCheck);
+    window.playbackCheck = setInterval(() => {
+      if (player && player.getCurrentTime) {
+        const currentTime = player.getCurrentTime();
+        if (currentTime >= 5400) {
+          let nextIndex = (currentIndex + 1) % videoIds.length;
+          loadVideoAtIndex(nextIndex);
+        }
       }
-    }
+    }, 1000);
+  }
+
+  if (slot >= 0 && slot < videoIds.length) {
+    const baselineSeconds = 4 * 3600 + 30 * 60 + slot * slotDuration * 60;
+    const currentTotalSeconds = currentHours * 3600 + currentMinutes * 60 + currentSeconds;
+    let diffInSeconds = currentTotalSeconds - baselineSeconds;
+    if (diffInSeconds < 0) diffInSeconds += 86400;
+
+    player = new YT.Player('ytplayer', {
+      videoId: videoIds[slot],
+      playerVars: {
+        autoplay: 1,
+        controls: 0,
+        modestbranding: 0,
+        rel: 0
+      },
+      events: {
+        'onReady': function (event) {
+          event.target.seekTo(diffInSeconds, true);
+          setupTimeCheck(slot);
+        }
+      }
+    });
+  } else {
+    document.getElementById('ytplayer').innerHTML =
+      `<p style="color:white; font-family: monospace;">No content scheduled for this time.</p>`;
+  }
+}
+
   </script>
 </body>
 
