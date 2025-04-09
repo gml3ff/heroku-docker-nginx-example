@@ -19,16 +19,16 @@ server {
     root   /usr/share/nginx/html;
   }
 
- location /newest {
-    try_files $uri $uri/ /newest.html;
+ location /watch-now {
+    try_files $uri $uri/ /watch-now.html;
  }
  
- location /previous {
-    try_files $uri $uri/ /previous.html;
+ location /random {
+    try_files $uri $uri/ /random.html;
  }
 
- location /archive {
-    try_files $uri $uri/ /archive.html;
+ location /instructions {
+    try_files $uri $uri/ /instructions.html;
  }
 
  # location /live {
