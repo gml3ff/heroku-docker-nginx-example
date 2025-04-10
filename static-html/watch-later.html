@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>watch now</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon_io/favicon.ico">
+  <link rel="preload" as="image" href="../images/tv_with_cover.png">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .tv-container {
+      position: relative;
+      width: 100vw;
+      max-width: 100vw;
+      aspect-ratio: 1114 / 699;
+      background-image: url('../images/tv_with_cover.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .video-container {
+      position: absolute;
+      top: 80px;
+      left: 135px;
+      width: 675px;
+      height: 470px;
+      transform-origin: top left;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .video-container.ready {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    #ytplayer {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .scale-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1114px;
+      height: 699px;
+      transform-origin: top left;
+      transform: scale(var(--scale));
+    }
+
+    .tv-foreground {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div class="tv-container" id="tvContainer">
+    <div class="scale-wrapper" id="scaleWrapper">
+      <div class="video-container" id="videoContainer">
+        <div id="ytplayer" loading="lazy"></div>
+      </div>
+    </div>
+    <img alt="TV frame" class="tv-foreground" src="../images/tv_with_cover.png" />
+  </div>
+
+  <script defer src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    function updateScale() {
+      const container = document.getElementById('tvContainer');
+      const scaleWrapper = document.getElementById('scaleWrapper');
+      const targetWidth = 1114;
+      const actualWidth = container.clientWidth;
+      const scale = actualWidth / targetWidth;
+      scaleWrapper.style.setProperty('--scale', scale);
+    }
+
+    window.addEventListener('resize', updateScale);
+    window.addEventListener('load', updateScale);
+
+    let player;
+    let currentSlot = null;
+    let pauseTimestamp = null;
+
+    const slotDurationSeconds = 90 * 60; // 90 minutes
+    const slotStartUTC = 4 * 3600;       // 04:00 UTC start baseline
+    const videoIds = [
+      "9L0awdHkPnQ", "eCtVDGgVx90", "Hp1mOr_yFgs", "dHAr1JK8gxk",
+      "5ZLA5_8ubug", "vfnFjqnRDSo", "zE0f0e2359M", "Q1ivDVHOa_c",
+      "AY3R03oLbtk", "dmKmr3Wom38", "ULV4I22rey4", "r-KDJvb8Zs4",
+      "Cr2-7wgh9Lo", "a2TYbFD07qM", "LgiJdjnrX8U", "H38xy-zl21M"
+    ];
+
+    function getCurrentUTCTimeInSeconds() {
+      const now = new Date();
+      return now.getUTCHours() * 3600 + now.getUTCMinutes() * 60 + now.getUTCSeconds();
+    }
+
+    function getSlotInfo() {
+      let now = getCurrentUTCTimeInSeconds();
+      let diff = now - slotStartUTC;
+      if (diff < 0) diff += 86400;
+      const slot = Math.floor(diff / slotDurationSeconds);
+      const offset = diff % slotDurationSeconds;
+      return { slot, offset };
+    }
+
+    function loadVideoAtSlot(slot, offset = 0) {
+      currentSlot = slot;
+      player.loadVideoById({
+        videoId: videoIds[slot % videoIds.length],
+        startSeconds: offset
+      });
+    }
+
+    function onYouTubeIframeAPIReady() {
+      const { slot, offset } = getSlotInfo();
+      currentSlot = slot;
+
+      player = new YT.Player('ytplayer', {
+        videoId: videoIds[slot % videoIds.length],
+        playerVars: {
+          autoplay: 1,
+          controls: 0,
+          modestbranding: 0,
+          rel: 0,
+          fs: 0,
+          iv_load_policy: 3
+        },
+        events: {
+          onReady: function (event) {
+            event.target.seekTo(offset, true);
+
+            // Fade in once loaded and seeked
+            const container = document.getElementById('videoContainer');
+            requestAnimationFrame(() => {
+              container.classList.add('ready');
+            });
+          },
+          onStateChange: function (event) {
+            if (event.data === YT.PlayerState.PAUSED) {
+              pauseTimestamp = Date.now();
+            }
+
+            if (event.data === YT.PlayerState.PLAYING) {
+              const now = Date.now();
+
+              if (pauseTimestamp !== null) {
+                const pausedDuration = Math.floor((now - pauseTimestamp) / 1000);
+                pauseTimestamp = null;
+
+                const resumedSlotInfo = getSlotInfo();
+
+                if (resumedSlotInfo.slot !== currentSlot) {
+                  loadVideoAtSlot(resumedSlotInfo.slot, resumedSlotInfo.offset);
+                } else {
+                  const newOffset = resumedSlotInfo.offset;
+                  const currentPlayback = player.getCurrentTime();
+                  if (Math.abs(currentPlayback - newOffset) > 2) {
+                    player.seekTo(newOffset, true);
+                  }
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
