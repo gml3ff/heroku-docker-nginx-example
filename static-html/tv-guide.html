@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=block" rel="stylesheet" />
-
   <style>
     html,
     body {
@@ -91,25 +90,27 @@
     }
 
     h3 {
-      font-size: 0.7em;
+      font-size: 0.8em;
+    }
+
+    /* Wrap the scrollable table in a container for fixed indicator */
+    .about-wrapper {
+      position: relative;
+      max-height: 215px;
     }
 
     .about-body {
+      overflow-y: scroll;
       padding-top: 1%;
       padding-right: 45%;
       font-size: 1em;
       color: #fff;
       text-align: left;
-
-      max-height: 180px;
-      overflow-y: scroll;
-      /* Always reserve scrollbar space */
+      max-height: 215px;
       scrollbar-width: none;
-      /* Firefox: hide scrollbar by default */
+      /* Firefox */
       -ms-overflow-style: none;
       /* IE/Edge */
-
-      position: relative;
     }
 
     .about-body::-webkit-scrollbar {
@@ -126,12 +127,76 @@
       transition: background-color 0.3s ease;
     }
 
-    /* Only show the thumb when hovering */
     .about-body:hover::-webkit-scrollbar-thumb {
       background-color: rgba(255, 255, 255, 0.5);
     }
 
+    /* Table styling with white outlines (kept) and centered horizontally */
+    .table-text {
+      border-collapse: collapse;
+      border: 2px solid white;
+      margin: 0 auto;
+      font-size: 0.67em;
+      color: #fff;
+      text-shadow: 1px 2px green, -1px -2px red;
+      filter: blur(0.5px);
+      align: center;
+      width: 130%
+    }
 
+    .table-text td,
+    .table-text th {
+      border: 2px solid white;
+      padding-left: 30px;
+      padding-right: 30px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+
+    }
+
+    /* Remove the default link hover behavior within the table cells */
+    .table-text td a:hover {
+      background-color: transparent;
+      color: inherit;
+    }
+
+    /* Apply the hover effect to the entire table cell */
+    .table-text td:hover {
+      background-color: white;
+      color: #171DA8;
+      cursor: pointer;
+      /* Optional: indicates the cell is interactive */
+    }
+
+    /* Ensure the links inside a hovered cell inherit the new color */
+    .table-text td:hover a {
+      color: inherit;
+    }
+
+    .table-text td.no-hover:hover {
+      background-color: transparent;
+      /* Or inherit the original background */
+      color: inherit;
+      cursor: default;
+    }
+
+
+    /* Fixed scroll-indicator positioned at bottom center of the wrapper */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 5px;
+      left: 35%;
+      transform: translateX(-50%);
+      text-align: center;
+      font-size: 0.6em;
+      color: #fff;
+      text-shadow: 1px 2px green, -1px -2px red;
+      filter: blur(0.5px);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      width: 100%;
+    }
 
     a {
       color: white;
@@ -153,33 +218,7 @@
       z-index: 10;
     }
 
-    .table-text {
-      font-size:0.5em;
-    }
-
-    .line {
-      padding-left: 21%;
-      width: 42%;
-      height: 3px;
-      animation: appear 1s infinite, flick 1s infinite, big-jump 5ms infinite;
-    }
-
-    .line .white {
-      background: white;
-      height: 4px;
-    }
-
-    .line .red {
-      background: red;
-      height: 1px;
-    }
-
-    .line .green {
-      background: green;
-      height: 1px;
-    }
-
-    /* Animations */
+    /* Animations (unchanged) */
     @keyframes blur {
 
       0%,
@@ -262,14 +301,14 @@
 
       41% {
         opacity: 0.8;
-        top: 0px;
+        top: 0;
         left: -1px;
         transform: scale(1, 1.2) skew(10deg, 0);
       }
 
       42% {
         opacity: 0.8;
-        top: 0px;
+        top: 0;
         left: 1px;
         transform: scale(1, 1.2) skew(-15deg, 0);
       }
@@ -292,46 +331,71 @@
           <div class="vhs-message">
             <span>
               <h1>GUIDE</h1>
-              <div class="about-body">
-                play a previous program
-                <table border="1" cellspacing="10" cellpadding="10" class="table-text">
-                  <tr>
-                    <td><a href="https://www.youtube.com/embed/9L0awdHkPnQ?autoplay=1&wmode=opaque">06:00–07:30</a></td>
-                    <td><a href="https://www.youtube.com/embed/eCtVDGgVx90?autoplay=1&wmode=opaque">07:30–09:00</a></td>
-                    <td><a href="https://www.youtube.com/embed/Hp1mOr_yFgs?autoplay=1&wmode=opaque">09:00–10:30</a></td>
-                    <td><a href="https://www.youtube.com/embed/dHAr1JK8gxk?autoplay=1&wmode=opaque">10:30–12:00</a></td>
-                  </tr>
-                  <tr>
-                    <td><a href="https://www.youtube.com/embed/5ZLA5_8ubug?autoplay=1&wmode=opaque">12:00–13:30</a></td>
-                    <td><a href="https://www.youtube.com/embed/vfnFjqnRDSo?autoplay=1&wmode=opaque">13:30–15:00</a></td>
-                    <td><a href="https://www.youtube.com/embed/zE0f0e2359M?autoplay=1&wmode=opaque">15:00–16:30</a></td>
-                    <td><a href="https://www.youtube.com/embed/Q1ivDVHOa_c?autoplay=1&wmode=opaque">16:30–18:00</a></td>
-                  </tr>
-                  <tr>
-                    <td><a href="https://www.youtube.com/embed/AY3R03oLbtk?autoplay=1&wmode=opaque">18:00–19:30</a></td>
-                    <td><a href="https://www.youtube.com/embed/dmKmr3Wom38?autoplay=1&wmode=opaque">19:30–21:00</a></td>
-                    <td><a href="https://www.youtube.com/embed/ULV4I22rey4?autoplay=1&wmode=opaque">21:00–22:30</a></td>
-                    <td><a href="https://www.youtube.com/embed/r-KDJvb8Zs4?autoplay=1&wmode=opaque">22:30–00:00</a></td>
-                  </tr>
-                  <tr>
-                    <td><a href="https://www.youtube.com/embed/Cr2-7wgh9Lo?autoplay=1&wmode=opaque">00:00–01:30</a></td>
-                    <td><a href="https://www.youtube.com/embed/a2TYbFD07qM?autoplay=1&wmode=opaque">01:30–03:00</a></td>
-                    <td><a href="https://www.youtube.com/embed/LgiJdjnrX8U?autoplay=1&wmode=opaque">03:00–04:30</a></td>
-                    <td><a href="https://www.youtube.com/embed/H38xy-zl21M?autoplay=1&wmode=opaque">04:30–06:00</a></td>
-                  </tr>
-                </table>
-                
+              <!-- Use a wrapper to hold the scrollable table and fixed indicator -->
+              <div class="about-wrapper">
+                <div class="about-body">
+                  <table class="table-text">
+                    <tr>
+                      <td colspan="3" style="font-size: 1.2em;" class="no-hover">daytime program</td>
+                    </tr>
+                    <tr>
+                      <td><a href="https://www.youtube.com/embed/9L0awdHkPnQ?autoplay=1&wmode=opaque">06:00–07:30</a>
+                      </td>
+                      <td><a href="https://www.youtube.com/embed/eCtVDGgVx90?autoplay=1&wmode=opaque">07:30–09:00</a>
+                      </td>
+                      <td><a href="https://www.youtube.com/embed/Hp1mOr_yFgs?autoplay=1&wmode=opaque">09:00–10:30</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a href="https://www.youtube.com/embed/dHAr1JK8gxk?autoplay=1&wmode=opaque">10:30–12:00</a>
+                      </td>
+                      <td><a href="https://www.youtube.com/embed/5ZLA5_8ubug?autoplay=1&wmode=opaque">12:00–13:30</a>
+                      </td>
+                      <td><a href="https://www.youtube.com/embed/vfnFjqnRDSo?autoplay=1&wmode=opaque">13:30–15:00</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a href="https://www.youtube.com/embed/zE0f0e2359M?autoplay=1&wmode=opaque">15:00–16:30</a>
+                      </td>
+                      <td><a href="https://www.youtube.com/embed/Q1ivDVHOa_c?autoplay=1&wmode=opaque">16:30–18:00</a>
+                      </td>
+                      <td><a href="https://www.youtube.com/embed/AY3R03oLbtk?autoplay=1&wmode=opaque">18:00–19:30</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a href="https://www.youtube.com/embed/dmKmr3Wom38?autoplay=1&wmode=opaque">19:30–21:00</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="3" style="font-size: 1.2em;" class="no-hover">nighttime program</td>
+                    </tr>
+                    <tr>
+                      <td><a href="https://www.youtube.com/embed/ULV4I22rey4?autoplay=1&wmode=opaque">21:00–22:30</a>
+                      </td>
+                      <td><a href="https://www.youtube.com/embed/r-KDJvb8Zs4?autoplay=1&wmode=opaque">22:30–00:00</a>
+                      </td>
+                      <td><a href="https://www.youtube.com/embed/Cr2-7wgh9Lo?autoplay=1&wmode=opaque">00:00–01:30</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a href="https://www.youtube.com/embed/a2TYbFD07qM?autoplay=1&wmode=opaque">01:30–03:00</a>
+                      </td>
+                      <td><a href="https://www.youtube.com/embed/LgiJdjnrX8U?autoplay=1&wmode=opaque">03:00–04:30</a>
+                      </td>
+                      <td><a href="https://www.youtube.com/embed/H38xy-zl21M?autoplay=1&wmode=opaque">04:30–06:00</a>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <div class="scroll-indicator">↓ scroll down for more ↓</div>
               </div>
             </span>
-
           </div>
-
         </div>
       </div>
-      <img alt="TV frame" class="tv-foreground" src="../images/tv_with_cover_lowopacity.png" />
+      <img alt="TV frame" class="tv-foreground" src="../images/tv_with_cover_lowopacity.png">
     </div>
   </div>
-
   <script>
     function updateScale() {
       const container = document.getElementById('tvContainer');
@@ -341,7 +405,6 @@
       const scale = actualWidth / targetWidth;
       scaleWrapper.style.setProperty('--scale', scale);
     }
-
     async function waitForReady() {
       const font = new FontFace('Press Start 2P', 'url(https://fonts.gstatic.com/s/pressstart2p/v11/e3t4euO8T-267oIAQAu6jDQyKPRJ1_U.woff2)');
       try {
@@ -350,20 +413,45 @@
       } catch (e) {
         console.warn("Font load failed (fallback will be used)");
       }
-
       const img = new Image();
       img.src = "../images/tv_with_cover.png";
-      await new Promise(res => {
-        img.onload = res;
-        img.onerror = res;
-      });
-
+      await new Promise(res => { img.onload = res; img.onerror = res; });
       document.body.style.visibility = 'visible';
       updateScale();
     }
-
     waitForReady();
     window.addEventListener('resize', updateScale);
+    // Minimal JS for scroll-indicator behavior:
+    document.addEventListener("DOMContentLoaded", () => {
+      const aboutBody = document.querySelector(".about-body");
+      const scrollIndicator = document.querySelector(".scroll-indicator");
+      let scrollingTimer = null;
+      function checkScroll() {
+        const isScrollable = aboutBody.scrollHeight > aboutBody.clientHeight;
+        const isAtBottom = aboutBody.scrollTop + aboutBody.clientHeight >= aboutBody.scrollHeight - 1;
+        if (!isScrollable || isAtBottom) {
+          scrollIndicator.style.opacity = "0";
+        } else if (aboutBody.matches(":hover") && !scrollingTimer) {
+          scrollIndicator.style.opacity = "1";
+        } else {
+          scrollIndicator.style.opacity = "0";
+        }
+      }
+      aboutBody.addEventListener("scroll", () => {
+        // Hide indicator immediately when scrolling
+        scrollIndicator.style.opacity = "0";
+        clearTimeout(scrollingTimer);
+        scrollingTimer = setTimeout(() => {
+          scrollingTimer = null;
+          checkScroll();
+        }, 150);
+      });
+      aboutBody.addEventListener("mouseenter", checkScroll);
+      aboutBody.addEventListener("mouseleave", () => {
+        scrollIndicator.style.opacity = "0";
+      });
+      checkScroll();
+    });
   </script>
 </body>
 
