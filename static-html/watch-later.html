@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <title>watch now</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon_io/favicon.ico">
   <link rel="preload" as="image" href="../images/tv_with_cover.png">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
-
   <style>
-    html, body {
+    html,
+    body {
       margin: 0;
       padding: 0;
       height: 100vh;
@@ -75,6 +76,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="tv-container" id="tvContainer">
     <div class="scale-wrapper" id="scaleWrapper">
@@ -99,94 +101,47 @@
     window.addEventListener('resize', updateScale);
     window.addEventListener('load', updateScale);
 
+    // Helper to retrieve query parameters from the URL
+    function getParameterByName(name) {
+      const url = window.location.href;
+      name = name.replace(/[\[\]]/g, '\\$&');
+      const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+      const results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+
     let player;
-    let currentSlot = null;
-    let pauseTimestamp = null;
-
-    const slotDurationSeconds = 90 * 60; // 90 minutes
-    const slotStartUTC = 4 * 3600;       // 04:00 UTC start baseline
-    const videoIds = [
-      "9L0awdHkPnQ", "eCtVDGgVx90", "Hp1mOr_yFgs", "dHAr1JK8gxk",
-      "5ZLA5_8ubug", "vfnFjqnRDSo", "zE0f0e2359M", "Q1ivDVHOa_c",
-      "AY3R03oLbtk", "dmKmr3Wom38", "ULV4I22rey4", "r-KDJvb8Zs4",
-      "Cr2-7wgh9Lo", "a2TYbFD07qM", "LgiJdjnrX8U", "H38xy-zl21M"
-    ];
-
-    function getCurrentUTCTimeInSeconds() {
-      const now = new Date();
-      return now.getUTCHours() * 3600 + now.getUTCMinutes() * 60 + now.getUTCSeconds();
-    }
-
-    function getSlotInfo() {
-      let now = getCurrentUTCTimeInSeconds();
-      let diff = now - slotStartUTC;
-      if (diff < 0) diff += 86400;
-      const slot = Math.floor(diff / slotDurationSeconds);
-      const offset = diff % slotDurationSeconds;
-      return { slot, offset };
-    }
-
-    function loadVideoAtSlot(slot, offset = 0) {
-      currentSlot = slot;
-      player.loadVideoById({
-        videoId: videoIds[slot % videoIds.length],
-        startSeconds: offset
-      });
-    }
-
     function onYouTubeIframeAPIReady() {
-      const { slot, offset } = getSlotInfo();
-      currentSlot = slot;
-
+      const videoId = getParameterByName('videoId');
+      if (!videoId) {
+        console.error("No videoId specified in the URL");
+        return;
+      }
       player = new YT.Player('ytplayer', {
-        videoId: videoIds[slot % videoIds.length],
+        videoId: videoId,
         playerVars: {
           autoplay: 1,
           controls: 0,
           modestbranding: 0,
           rel: 0,
           fs: 0,
-          iv_load_policy: 3
+          iv_load_policy: 3,
+          start: 0
         },
         events: {
           onReady: function (event) {
-            event.target.seekTo(offset, true);
-
-            // Fade in once loaded and seeked
+            // Fade in the video container once the video is ready
             const container = document.getElementById('videoContainer');
             requestAnimationFrame(() => {
               container.classList.add('ready');
             });
-          },
-          onStateChange: function (event) {
-            if (event.data === YT.PlayerState.PAUSED) {
-              pauseTimestamp = Date.now();
-            }
-
-            if (event.data === YT.PlayerState.PLAYING) {
-              const now = Date.now();
-
-              if (pauseTimestamp !== null) {
-                const pausedDuration = Math.floor((now - pauseTimestamp) / 1000);
-                pauseTimestamp = null;
-
-                const resumedSlotInfo = getSlotInfo();
-
-                if (resumedSlotInfo.slot !== currentSlot) {
-                  loadVideoAtSlot(resumedSlotInfo.slot, resumedSlotInfo.offset);
-                } else {
-                  const newOffset = resumedSlotInfo.offset;
-                  const currentPlayback = player.getCurrentTime();
-                  if (Math.abs(currentPlayback - newOffset) > 2) {
-                    player.seekTo(newOffset, true);
-                  }
-                }
-              }
-            }
           }
         }
       });
     }
   </script>
 </body>
+
 </html>

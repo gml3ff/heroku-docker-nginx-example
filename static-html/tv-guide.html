@@ -108,9 +108,7 @@
       text-align: left;
       max-height: 215px;
       scrollbar-width: none;
-      /* Firefox */
       -ms-overflow-style: none;
-      /* IE/Edge */
     }
 
     .about-body::-webkit-scrollbar {
@@ -151,7 +149,6 @@
       padding-right: 30px;
       padding-top: 10px;
       padding-bottom: 10px;
-
     }
 
     /* Remove the default link hover behavior within the table cells */
@@ -165,7 +162,6 @@
       background-color: white;
       color: #171DA8;
       cursor: pointer;
-      /* Optional: indicates the cell is interactive */
     }
 
     /* Ensure the links inside a hovered cell inherit the new color */
@@ -173,13 +169,12 @@
       color: inherit;
     }
 
+    /* Disable hover effect for cells marked with "no-hover" */
     .table-text td.no-hover:hover {
       background-color: transparent;
-      /* Or inherit the original background */
       color: inherit;
       cursor: default;
     }
-
 
     /* Fixed scroll-indicator positioned at bottom center of the wrapper */
     .scroll-indicator {
@@ -220,13 +215,11 @@
 
     /* Animations (unchanged) */
     @keyframes blur {
-
       0%,
       100% {
         filter: blur(1px);
         opacity: 0.8;
       }
-
       50% {
         filter: blur(1px);
         opacity: 1;
@@ -237,7 +230,6 @@
       50% {
         left: 2px;
       }
-
       51% {
         left: 0;
       }
@@ -247,20 +239,17 @@
       30% {
         top: 1px;
       }
-
       31% {
         top: 0;
       }
     }
 
     @keyframes appear {
-
       0%,
       100% {
         filter: blur(5px);
         opacity: 0.85;
       }
-
       50% {
         filter: blur(3px);
         opacity: 0.85;
@@ -268,7 +257,6 @@
     }
 
     @keyframes big-jump {
-
       0%,
       12%,
       54%,
@@ -277,15 +265,12 @@
       88% {
         top: 0;
       }
-
       10% {
         top: -10px;
       }
-
       55% {
         top: -30px;
       }
-
       87% {
         top: -60px;
       }
@@ -298,21 +283,18 @@
         left: 0;
         transform: scale(1, 1) skew(0, 0);
       }
-
       41% {
         opacity: 0.8;
         top: 0;
         left: -1px;
         transform: scale(1, 1.2) skew(10deg, 0);
       }
-
       42% {
         opacity: 0.8;
         top: 0;
         left: 1px;
         transform: scale(1, 1.2) skew(-15deg, 0);
       }
-
       43% {
         opacity: 1;
         top: 0;
@@ -339,51 +321,35 @@
                       <td colspan="3" style="font-size: 1.2em;" class="no-hover">daytime program</td>
                     </tr>
                     <tr>
-                      <td><a href="https://www.youtube.com/embed/9L0awdHkPnQ?autoplay=1&wmode=opaque">06:00–07:30</a>
-                      </td>
-                      <td><a href="https://www.youtube.com/embed/eCtVDGgVx90?autoplay=1&wmode=opaque">07:30–09:00</a>
-                      </td>
-                      <td><a href="https://www.youtube.com/embed/Hp1mOr_yFgs?autoplay=1&wmode=opaque">09:00–10:30</a>
-                      </td>
+                      <td><a href="watch-later.html?videoId=9L0awdHkPnQ">06:00–07:30</a></td>
+                      <td><a href="watch-later.html?videoId=eCtVDGgVx90">07:30–09:00</a></td>
+                      <td><a href="watch-later.html?videoId=Hp1mOr_yFgs">09:00–10:30</a></td>
                     </tr>
                     <tr>
-                      <td><a href="https://www.youtube.com/embed/dHAr1JK8gxk?autoplay=1&wmode=opaque">10:30–12:00</a>
-                      </td>
-                      <td><a href="https://www.youtube.com/embed/5ZLA5_8ubug?autoplay=1&wmode=opaque">12:00–13:30</a>
-                      </td>
-                      <td><a href="https://www.youtube.com/embed/vfnFjqnRDSo?autoplay=1&wmode=opaque">13:30–15:00</a>
-                      </td>
+                      <td><a href="watch-later.html?videoId=dHAr1JK8gxk">10:30–12:00</a></td>
+                      <td><a href="watch-later.html?videoId=5ZLA5_8ubug">12:00–13:30</a></td>
+                      <td><a href="watch-later.html?videoId=vfnFjqnRDSo">13:30–15:00</a></td>
                     </tr>
                     <tr>
-                      <td><a href="https://www.youtube.com/embed/zE0f0e2359M?autoplay=1&wmode=opaque">15:00–16:30</a>
-                      </td>
-                      <td><a href="https://www.youtube.com/embed/Q1ivDVHOa_c?autoplay=1&wmode=opaque">16:30–18:00</a>
-                      </td>
-                      <td><a href="https://www.youtube.com/embed/AY3R03oLbtk?autoplay=1&wmode=opaque">18:00–19:30</a>
-                      </td>
+                      <td><a href="watch-later.html?videoId=zE0f0e2359M">15:00–16:30</a></td>
+                      <td><a href="watch-later.html?videoId=Q1ivDVHOa_c">16:30–18:00</a></td>
+                      <td><a href="watch-later.html?videoId=AY3R03oLbtk">18:00–19:30</a></td>
                     </tr>
                     <tr>
-                      <td><a href="https://www.youtube.com/embed/dmKmr3Wom38?autoplay=1&wmode=opaque">19:30–21:00</a>
-                      </td>
+                      <td><a href="watch-later.html?videoId=dmKmr3Wom38">19:30–21:00</a></td>
                     </tr>
                     <tr>
                       <td colspan="3" style="font-size: 1.2em;" class="no-hover">nighttime program</td>
                     </tr>
                     <tr>
-                      <td><a href="https://www.youtube.com/embed/ULV4I22rey4?autoplay=1&wmode=opaque">21:00–22:30</a>
-                      </td>
-                      <td><a href="https://www.youtube.com/embed/r-KDJvb8Zs4?autoplay=1&wmode=opaque">22:30–00:00</a>
-                      </td>
-                      <td><a href="https://www.youtube.com/embed/Cr2-7wgh9Lo?autoplay=1&wmode=opaque">00:00–01:30</a>
-                      </td>
+                      <td><a href="watch-later.html?videoId=ULV4I22rey4">21:00–22:30</a></td>
+                      <td><a href="watch-later.html?videoId=r-KDJvb8Zs4">22:30–00:00</a></td>
+                      <td><a href="watch-later.html?videoId=Cr2-7wgh9Lo">00:00–01:30</a></td>
                     </tr>
                     <tr>
-                      <td><a href="https://www.youtube.com/embed/a2TYbFD07qM?autoplay=1&wmode=opaque">01:30–03:00</a>
-                      </td>
-                      <td><a href="https://www.youtube.com/embed/LgiJdjnrX8U?autoplay=1&wmode=opaque">03:00–04:30</a>
-                      </td>
-                      <td><a href="https://www.youtube.com/embed/H38xy-zl21M?autoplay=1&wmode=opaque">04:30–06:00</a>
-                      </td>
+                      <td><a href="watch-later.html?videoId=a2TYbFD07qM">01:30–03:00</a></td>
+                      <td><a href="watch-later.html?videoId=LgiJdjnrX8U">03:00–04:30</a></td>
+                      <td><a href="watch-later.html?videoId=H38xy-zl21M">04:30–06:00</a></td>
                     </tr>
                   </table>
                 </div>
@@ -405,6 +371,7 @@
       const scale = actualWidth / targetWidth;
       scaleWrapper.style.setProperty('--scale', scale);
     }
+
     async function waitForReady() {
       const font = new FontFace('Press Start 2P', 'url(https://fonts.gstatic.com/s/pressstart2p/v11/e3t4euO8T-267oIAQAu6jDQyKPRJ1_U.woff2)');
       try {
@@ -419,13 +386,16 @@
       document.body.style.visibility = 'visible';
       updateScale();
     }
+
     waitForReady();
     window.addEventListener('resize', updateScale);
+
     // Minimal JS for scroll-indicator behavior:
     document.addEventListener("DOMContentLoaded", () => {
       const aboutBody = document.querySelector(".about-body");
       const scrollIndicator = document.querySelector(".scroll-indicator");
       let scrollingTimer = null;
+
       function checkScroll() {
         const isScrollable = aboutBody.scrollHeight > aboutBody.clientHeight;
         const isAtBottom = aboutBody.scrollTop + aboutBody.clientHeight >= aboutBody.scrollHeight - 1;
@@ -437,8 +407,8 @@
           scrollIndicator.style.opacity = "0";
         }
       }
+
       aboutBody.addEventListener("scroll", () => {
-        // Hide indicator immediately when scrolling
         scrollIndicator.style.opacity = "0";
         clearTimeout(scrollingTimer);
         scrollingTimer = setTimeout(() => {
@@ -446,6 +416,7 @@
           checkScroll();
         }, 150);
       });
+
       aboutBody.addEventListener("mouseenter", checkScroll);
       aboutBody.addEventListener("mouseleave", () => {
         scrollIndicator.style.opacity = "0";
