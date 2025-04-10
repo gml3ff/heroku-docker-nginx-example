@@ -27,7 +27,7 @@ server {
     try_files $uri $uri/ /tv-guide.html;
  }
 
- location /tv-guide {
+ location /watch-later {
     try_files $uri $uri/ /watch-later.html;
  }
 
