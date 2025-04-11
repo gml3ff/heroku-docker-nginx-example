@@ -104,7 +104,6 @@
     let pauseTimestamp = null;
 
     const slotDurationSeconds = 90 * 60; // 90 minutes
-    const slotStartUTC = 4 * 3600;       // 04:00 UTC start baseline
     const videoIds = [
       "9L0awdHkPnQ", "eCtVDGgVx90", "Hp1mOr_yFgs", "dHAr1JK8gxk",
       "5ZLA5_8ubug", "vfnFjqnRDSo", "zE0f0e2359M", "Q1ivDVHOa_c",
@@ -112,14 +111,28 @@
       "Cr2-7wgh9Lo", "a2TYbFD07qM", "LgiJdjnrX8U", "H38xy-zl21M"
     ];
 
-    function getCurrentUTCTimeInSeconds() {
+    // Returns the current local time in seconds past midnight.
+    function getCurrentLocalTimeInSeconds() {
       const now = new Date();
-      return now.getUTCHours() * 3600 + now.getUTCMinutes() * 60 + now.getUTCSeconds();
+      return now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+    }
+
+    // Calculate the local time equivalent (in seconds) for the fixed UTC baseline (04:00 UTC).
+    function getBaselineInLocalSeconds() {
+      const now = new Date();
+      // getTimezoneOffset() returns the number of minutes _behind_ UTC.
+      const offsetSeconds = now.getTimezoneOffset() * 60;
+      let baselineLocal = 4 * 3600 - offsetSeconds;
+      // Adjust if the result is negative or exceeds a day.
+      if (baselineLocal < 0) baselineLocal += 86400;
+      else if (baselineLocal >= 86400) baselineLocal -= 86400;
+      return baselineLocal;
     }
 
     function getSlotInfo() {
-      let now = getCurrentUTCTimeInSeconds();
-      let diff = now - slotStartUTC;
+      let now = getCurrentLocalTimeInSeconds();
+      const baseline = getBaselineInLocalSeconds();
+      let diff = now - baseline;
       if (diff < 0) diff += 86400;
       const slot = Math.floor(diff / slotDurationSeconds);
       const offset = diff % slotDurationSeconds;
