@@ -79,10 +79,11 @@
     <img alt="TV frame" class="tv-foreground" src="../images/tv_with_cover.png" />
   </div>
 
+  <!-- Load YouTube IFrame API -->
   <script defer src="https://www.youtube.com/iframe_api"></script>
   <script>
     // -------------------------------
-    // Scaling (unchanged)
+    // Scaling
     // -------------------------------
     function updateScale() {
       const container = document.getElementById('tvContainer');
@@ -96,54 +97,85 @@
     window.addEventListener('load', updateScale);
 
     // -------------------------------
-    // ORIGINAL UTC-Based Timekeeping Logic
+    // Global Schedule (Local Time-Based)
     // -------------------------------
-    const slotDurationSeconds = 90 * 60; // 90 minutes per slot.
-    const slotStartUTC = 4 * 3600;       // 04:00 UTC baseline.
 
-    // Returns the current UTC time in seconds since midnight.
-    function getCurrentUTCTimeInSeconds() {
+    // Returns the current local time in seconds past midnight.
+    function getCurrentLocalTimeInSeconds() {
       const now = new Date();
-      return now.getUTCHours() * 3600 + now.getUTCMinutes() * 60 + now.getUTCSeconds();
+      return now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
     }
 
-    // Computes slot and offset based on UTC.
-    // This remains exactly as in your original file.
+    // Calculate the current "effective" time into our schedule.
+    // Our schedule starts at 06:00 local time (which is 6*3600 = 21600 seconds).
+    // We subtract 21600 from the current local seconds; if negative, add 86400.
+    function getEffectiveTime() {
+      const localSeconds = getCurrentLocalTimeInSeconds();
+      let effective = localSeconds - (6 * 3600);
+      if (effective < 0) {
+        effective += 86400;
+      }
+      return effective;
+    }
+
+    // Each slot is 90 minutes (90 * 60 = 5400 seconds) long.
+    // Using our effective time, we compute the slot index (0–15) and the offset (in seconds)
+    // into the current slot.
     function getSlotInfo() {
-      let now = getCurrentUTCTimeInSeconds();
-      let diff = now - slotStartUTC;
-      if (diff < 0) diff += 86400;
-      const slot = Math.floor(diff / slotDurationSeconds);
-      const offset = diff % slotDurationSeconds;
+      const effective = getEffectiveTime();
+      const slotDuration = 90 * 60; // 5400 seconds per slot.
+      const slot = Math.floor(effective / slotDuration);
+      const offset = effective % slotDuration;
       return { slot, offset };
     }
 
-    // Original video rotation array.
+    // -------------------------------
+    // Video Rotation from Provided Table
+    // -------------------------------
+    // The order of video IDs corresponds exactly to your table:
+    // Slot 0 (06:00-07:30): 9L0awdHkPnQ  
+    // Slot 1 (07:30-09:00): eCtVDGgVx90  
+    // Slot 2 (09:00-10:30): Hp1mOr_yFgs  
+    // Slot 3 (10:30-12:00): dHAr1JK8gxk  
+    // Slot 4 (12:00-13:30): 5ZLA5_8ubug  
+    // Slot 5 (13:30-15:00): vfnFjqnRDSo  
+    // Slot 6 (15:00-16:30): zE0f0e2359M  
+    // Slot 7 (16:30-18:00): Q1ivDVHOa_c  
+    // Slot 8 (18:00-19:30): AY3R03oLbtk  
+    // Slot 9 (19:30-21:00): dmKmr3Wom38  
+    // Slot 10 (21:00-22:30): ULV4I22rey4  
+    // Slot 11 (22:30-00:00): r-KDJvb8Zs4  
+    // Slot 12 (00:00-01:30): Cr2-7wgh9Lo  
+    // Slot 13 (01:30-03:00): a2TYbFD07qM  
+    // Slot 14 (03:00-04:30): LgiJdjnrX8U  
+    // Slot 15 (04:30-06:00): H38xy-zl21M
     const videoIds = [
-      "9L0awdHkPnQ", "eCtVDGgVx90", "Hp1mOr_yFgs", "dHAr1JK8gxk",
-      "5ZLA5_8ubug", "vfnFjqnRDSo", "zE0f0e2359M", "Q1ivDVHOa_c",
-      "AY3R03oLbtk", "dmKmr3Wom38", "ULV4I22rey4", "r-KDJvb8Zs4",
-      "Cr2-7wgh9Lo", "a2TYbFD07qM", "LgiJdjnrX8U", "H38xy-zl21M"
+      "9L0awdHkPnQ", // Slot 0: 06:00-07:30
+      "eCtVDGgVx90", // Slot 1: 07:30-09:00
+      "Hp1mOr_yFgs", // Slot 2: 09:00-10:30
+      "dHAr1JK8gxk", // Slot 3: 10:30-12:00
+      "5ZLA5_8ubug", // Slot 4: 12:00-13:30
+      "vfnFjqnRDSo", // Slot 5: 13:30-15:00
+      "zE0f0e2359M", // Slot 6: 15:00-16:30
+      "Q1ivDVHOa_c", // Slot 7: 16:30-18:00
+      "AY3R03oLbtk", // Slot 8: 18:00-19:30
+      "dmKmr3Wom38", // Slot 9: 19:30-21:00
+      "ULV4I22rey4", // Slot 10: 21:00-22:30
+      "r-KDJvb8Zs4", // Slot 11: 22:30-00:00
+      "Cr2-7wgh9Lo", // Slot 12: 00:00-01:30
+      "a2TYbFD07qM", // Slot 13: 01:30-03:00
+      "LgiJdjnrX8U", // Slot 14: 03:00-04:30
+      "H38xy-zl21M"  // Slot 15: 04:30-06:00
     ];
 
     // -------------------------------
-    // Localization Override for Video Selection
+    // Load Video Based on Slot Info
     // -------------------------------
-    // This function wraps the original behavior by overriding the video ID based on the viewer's timezone.
+    // This function uses the computed slot and offset to load the appropriate video.
     function loadVideoAtSlot(slot, offset = 0) {
       currentSlot = slot;
-      // Use the original rotation index:
-      let videoId = videoIds[slot % videoIds.length];
-      // Get the browser's timezone offset (in minutes).
-      const tzOffset = new Date().getTimezoneOffset();
-      // Note: getTimezoneOffset() is the number of minutes _behind_ UTC.
-      // For Eastern Time, typical values are 240 (EDT) or 300 (EST).
-      // For CET, typical values are -60 (winter) or -120 (summer).
-      if (tzOffset === 300 || tzOffset === 240) {
-        videoId = "AY3R03oLbtk";  // Eastern Time override.
-      } else if (tzOffset === -60 || tzOffset === -120) {
-        videoId = "Cr2-7wgh9Lo";  // CET override.
-      }
+      // Choose the video ID based on the slot (using modulo in case of overrun).
+      const videoId = videoIds[slot % videoIds.length];
       player.loadVideoById({
         videoId: videoId,
         startSeconds: offset
@@ -151,7 +183,7 @@
     }
 
     // -------------------------------
-    // YouTube Player Integration
+    // YouTube API Integration and State Management
     // -------------------------------
     let player;
     let currentSlot = null;
@@ -160,7 +192,7 @@
       const { slot, offset } = getSlotInfo();
       currentSlot = slot;
       player = new YT.Player('ytplayer', {
-        videoId: videoIds[slot % videoIds.length],  // temporary; will be overridden onReady.
+        videoId: videoIds[slot % videoIds.length], // temporary; will be overridden below.
         playerVars: {
           autoplay: 1,
           controls: 0,
@@ -171,7 +203,8 @@
         },
         events: {
           onReady: function (event) {
-            // Recalculate slot info (in case time has advanced slightly) and load the video with our timezone override.
+            // Recompute slot info in case a few seconds have passed,
+            // then load the appropriate video according to local time.
             const { slot, offset } = getSlotInfo();
             loadVideoAtSlot(slot, offset);
             const container = document.getElementById('videoContainer');
@@ -188,8 +221,12 @@
                 pauseTimestamp = null;
                 const resumedSlotInfo = getSlotInfo();
                 if (resumedSlotInfo.slot !== currentSlot) {
+                  // If the slot has changed (i.e. time has moved to the next 90‑minute block),
+                  // load the corresponding video.
                   loadVideoAtSlot(resumedSlotInfo.slot, resumedSlotInfo.offset);
                 } else {
+                  // Otherwise, if playback is drifting away from the computed offset,
+                  // seek to the proper position.
                   const newOffset = resumedSlotInfo.offset;
                   const currentPlayback = player.getCurrentTime();
                   if (Math.abs(currentPlayback - newOffset) > 2) {
