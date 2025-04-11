@@ -129,8 +129,7 @@
       background-color: rgba(255, 255, 255, 0.5);
     }
 
-    /* Table styling with white outlines and centered horizontally.
-       Modified width from 130% to 100% to match about-text width in about.html */
+    /* Table styling – note: using the original width of 130% to preserve layout */
     .table-text {
       border-collapse: collapse;
       border: 2px solid white;
@@ -139,39 +138,42 @@
       color: #fff;
       text-shadow: 1px 2px green, -1px -2px red;
       filter: blur(0.5px);
-      align: center;
-      width: 100%;
+      width: 130%;
     }
 
+    /* Remove the TD padding and set position relative for overlaying the link */
     .table-text td,
     .table-text th {
       border: 2px solid white;
-      padding-left: 30px;
-      padding-right: 30px;
-      padding-top: 10px;
-      padding-bottom: 10px;
+      padding: 0;
+      position: relative;
     }
 
+    /* The inner wrapper preserves the original padding and text wrapping */
+    .cell-content {
+      padding: 10px 30px;
+      white-space: normal;
+      word-wrap: break-word;
+    }
+
+    /* The anchor covers the entire cell */
     .table-text td a {
+      display: block;
       width: 100%;
       height: 100%;
-      line-height: 12px;
-      display: block;
-      vertical-align: middle;
-    }
-
-    .table-text td a:hover {
-      background-color: transparent;
+      text-decoration: none;
       color: inherit;
     }
 
+    /* Hover effects to match the original */
     .table-text td:hover {
       background-color: white;
       color: #171DA8;
       cursor: pointer;
     }
 
-    .table-text td:hover a {
+    .table-text td:hover a,
+    .table-text td:hover .cell-content {
       color: inherit;
     }
 
@@ -333,38 +335,102 @@
                 <div class="about-body">
                   <table class="table-text">
                     <tr>
-                      <td colspan="3" style="font-size: 1.2em;" class="no-hover">daytime program</td>
+                      <td colspan="3" style="font-size: 1.2em; padding-left: 2%; padding-top: 2%; padding-bottom: 2%;" class="no-hover">daytime program</td>
                     </tr>
                     <tr>
-                      <td><a href="watch-later.html?videoId=9L0awdHkPnQ">06:00–07:30</a></td>
-                      <td><a href="watch-later.html?videoId=eCtVDGgVx90">07:30–09:00</a></td>
-                      <td><a href="watch-later.html?videoId=Hp1mOr_yFgs">09:00–10:30</a></td>
+                      <td>
+                        <a href="watch-later.html?videoId=9L0awdHkPnQ">
+                          <div class="cell-content">06:00-<br>07:30</div>
+                        </a>
+                      </td>
+                      <td>
+                        <a href="watch-later.html?videoId=eCtVDGgVx90">
+                          <div class="cell-content">07:30–09:00</div>
+                        </a>
+                      </td>
+                      <td>
+                        <a href="watch-later.html?videoId=Hp1mOr_yFgs">
+                          <div class="cell-content">09:00–10:30</div>
+                        </a>
+                      </td>
                     </tr>
                     <tr>
-                      <td><a href="watch-later.html?videoId=dHAr1JK8gxk">10:30–12:00</a></td>
-                      <td><a href="watch-later.html?videoId=5ZLA5_8ubug">12:00–13:30</a></td>
-                      <td><a href="watch-later.html?videoId=vfnFjqnRDSo">13:30–15:00</a></td>
+                      <td>
+                        <a href="watch-later.html?videoId=dHAr1JK8gxk">
+                          <div class="cell-content">10:30–12:00</div>
+                        </a>
+                      </td>
+                      <td>
+                        <a href="watch-later.html?videoId=5ZLA5_8ubug">
+                          <div class="cell-content">12:00–13:30</div>
+                        </a>
+                      </td>
+                      <td>
+                        <a href="watch-later.html?videoId=vfnFjqnRDSo">
+                          <div class="cell-content">13:30–15:00</div>
+                        </a>
+                      </td>
                     </tr>
                     <tr>
-                      <td><a href="watch-later.html?videoId=zE0f0e2359M">15:00–16:30</a></td>
-                      <td><a href="watch-later.html?videoId=Q1ivDVHOa_c">16:30–18:00</a></td>
-                      <td><a href="watch-later.html?videoId=AY3R03oLbtk">18:00–19:30</a></td>
+                      <td>
+                        <a href="watch-later.html?videoId=zE0f0e2359M">
+                          <div class="cell-content">15:00–16:30</div>
+                        </a>
+                      </td>
+                      <td>
+                        <a href="watch-later.html?videoId=Q1ivDVHOa_c">
+                          <div class="cell-content">16:30–18:00</div>
+                        </a>
+                      </td>
+                      <td>
+                        <a href="watch-later.html?videoId=AY3R03oLbtk">
+                          <div class="cell-content">18:00–19:30</div>
+                        </a>
+                      </td>
                     </tr>
                     <tr>
-                      <td><a href="watch-later.html?videoId=dmKmr3Wom38">19:30–21:00</a></td>
+                      <td>
+                        <a href="watch-later.html?videoId=dmKmr3Wom38">
+                          <div class="cell-content">19:30–21:00</div>
+                        </a>
+                      </td>
                     </tr>
                     <tr>
-                      <td colspan="3" style="font-size: 1.2em;" class="no-hover">nighttime program</td>
+                      <td colspan="3" style="font-size: 1.2em; padding-left: 2%; padding-top: 2%; padding-bottom: 2%;" class="no-hover">nighttime program</td>
                     </tr>
                     <tr>
-                      <td><a href="watch-later.html?videoId=ULV4I22rey4">21:00–22:30</a></td>
-                      <td><a href="watch-later.html?videoId=r-KDJvb8Zs4">22:30–00:00</a></td>
-                      <td><a href="watch-later.html?videoId=Cr2-7wgh9Lo">00:00–01:30</a></td>
+                      <td>
+                        <a href="watch-later.html?videoId=ULV4I22rey4">
+                          <div class="cell-content">21:00–22:30</div>
+                        </a>
+                      </td>
+                      <td>
+                        <a href="watch-later.html?videoId=r-KDJvb8Zs4">
+                          <div class="cell-content">22:30–00:00</div>
+                        </a>
+                      </td>
+                      <td>
+                        <a href="watch-later.html?videoId=Cr2-7wgh9Lo">
+                          <div class="cell-content">00:00–01:30</div>
+                        </a>
+                      </td>
                     </tr>
                     <tr>
-                      <td><a href="watch-later.html?videoId=a2TYbFD07qM">01:30–03:00</a></td>
-                      <td><a href="watch-later.html?videoId=LgiJdjnrX8U">03:00–04:30</a></td>
-                      <td><a href="watch-later.html?videoId=H38xy-zl21M">04:30–06:00</a></td>
+                      <td>
+                        <a href="watch-later.html?videoId=a2TYbFD07qM">
+                          <div class="cell-content">01:30–03:00</div>
+                        </a>
+                      </td>
+                      <td>
+                        <a href="watch-later.html?videoId=LgiJdjnrX8U">
+                          <div class="cell-content">03:00–04:30</div>
+                        </a>
+                      </td>
+                      <td>
+                        <a href="watch-later.html?videoId=H38xy-zl21M">
+                          <div class="cell-content">04:30–06:00</div>
+                        </a>
+                      </td>
                     </tr>
                   </table>
                 </div>
@@ -408,7 +474,6 @@
     waitForReady();
     window.addEventListener('resize', updateScale);
 
-    // Scroll-indicator behavior remains the same as in about.html:
     document.addEventListener("DOMContentLoaded", () => {
       const aboutBody = document.querySelector(".about-body");
       const scrollIndicator = document.querySelector(".scroll-indicator");
