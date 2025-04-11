@@ -87,6 +87,7 @@
 
   <script defer src="https://www.youtube.com/iframe_api"></script>
   <script>
+    // Adjusts the scaling of the TV frame on window resize/load.
     function updateScale() {
       const container = document.getElementById('tvContainer');
       const scaleWrapper = document.getElementById('scaleWrapper');
@@ -95,7 +96,6 @@
       const scale = actualWidth / targetWidth;
       scaleWrapper.style.setProperty('--scale', scale);
     }
-
     window.addEventListener('resize', updateScale);
     window.addEventListener('load', updateScale);
 
@@ -103,6 +103,7 @@
     let currentSlot = null;
     let pauseTimestamp = null;
     const slotDurationSeconds = 90 * 60; // 90 minutes
+
     const videoIds = [
       "9L0awdHkPnQ", "eCtVDGgVx90", "Hp1mOr_yFgs", "dHAr1JK8gxk",
       "5ZLA5_8ubug", "vfnFjqnRDSo", "zE0f0e2359M", "Q1ivDVHOa_c",
@@ -110,17 +111,17 @@
       "Cr2-7wgh9Lo", "a2TYbFD07qM", "LgiJdjnrX8U", "H38xy-zl21M"
     ];
 
-    // Compute slot info based on a fixed scheduled start at 04:00 UTC.
+    // Computes slot info based on a fixed global baseline of 04:00 UTC.
     function getSlotInfo() {
       const now = new Date();
-      // Build the scheduled start as an absolute timestamp for today at 04:00 UTC.
+      // Construct today’s scheduled start at 04:00 UTC.
       let scheduledStartUTC = Date.UTC(
         now.getUTCFullYear(),
         now.getUTCMonth(),
         now.getUTCDate(),
         4, 0, 0
       );
-      // If current time is before today's scheduled start, back up one day.
+      // If current UTC time is before today’s scheduled start, use yesterday’s.
       if (now.getTime() < scheduledStartUTC) {
         scheduledStartUTC = Date.UTC(
           now.getUTCFullYear(),
@@ -129,13 +130,13 @@
           4, 0, 0
         );
       }
-      // Difference in seconds from the global (UTC) scheduled start.
       const diff = Math.floor((now.getTime() - scheduledStartUTC) / 1000);
       const slot = Math.floor(diff / slotDurationSeconds);
       const offset = diff % slotDurationSeconds;
       return { slot, offset };
     }
 
+    // Loads the video corresponding to the slot (based on modulo of videoIds).
     function loadVideoAtSlot(slot, offset = 0) {
       currentSlot = slot;
       player.loadVideoById({
@@ -144,6 +145,24 @@
       });
     }
 
+    // Periodically check (every 10 seconds) if the current slot should change.
+    function startSlotTimer() {
+      setInterval(() => {
+        const slotInfo = getSlotInfo();
+        // If the slot has changed, load the new video.
+        if (slotInfo.slot !== currentSlot) {
+          loadVideoAtSlot(slotInfo.slot, slotInfo.offset);
+        } else {
+          // Otherwise, adjust playback if the offset has drifted.
+          const currentPlayback = player.getCurrentTime();
+          if (Math.abs(currentPlayback - slotInfo.offset) > 2) {
+            player.seekTo(slotInfo.offset, true);
+          }
+        }
+      }, 10000); // Check every 10 seconds.
+    }
+
+    // YouTube API ready callback.
     function onYouTubeIframeAPIReady() {
       const { slot, offset } = getSlotInfo();
       currentSlot = slot;
@@ -161,26 +180,22 @@
         events: {
           onReady: function (event) {
             event.target.seekTo(offset, true);
-
-            // Fade in once loaded and seeked
+            // Fade in the video container when ready.
             const container = document.getElementById('videoContainer');
             requestAnimationFrame(() => {
               container.classList.add('ready');
             });
+            // Start checking for slot updates.
+            startSlotTimer();
           },
           onStateChange: function (event) {
             if (event.data === YT.PlayerState.PAUSED) {
               pauseTimestamp = Date.now();
             }
-
             if (event.data === YT.PlayerState.PLAYING) {
-              const now = Date.now();
-
               if (pauseTimestamp !== null) {
-                // Update the slot if the pause lasted long enough
                 pauseTimestamp = null;
                 const resumedSlotInfo = getSlotInfo();
-
                 if (resumedSlotInfo.slot !== currentSlot) {
                   loadVideoAtSlot(resumedSlotInfo.slot, resumedSlotInfo.offset);
                 } else {
