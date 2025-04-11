@@ -102,7 +102,6 @@
     let player;
     let currentSlot = null;
     let pauseTimestamp = null;
-
     const slotDurationSeconds = 90 * 60; // 90 minutes
     const videoIds = [
       "9L0awdHkPnQ", "eCtVDGgVx90", "Hp1mOr_yFgs", "dHAr1JK8gxk",
@@ -111,29 +110,27 @@
       "Cr2-7wgh9Lo", "a2TYbFD07qM", "LgiJdjnrX8U", "H38xy-zl21M"
     ];
 
-    // Returns the current local time in seconds past midnight.
-    function getCurrentLocalTimeInSeconds() {
-      const now = new Date();
-      return now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-    }
-
-    // Calculate the local time equivalent (in seconds) for the fixed UTC baseline (04:00 UTC).
-    function getBaselineInLocalSeconds() {
-      const now = new Date();
-      // getTimezoneOffset() returns the number of minutes _behind_ UTC.
-      const offsetSeconds = now.getTimezoneOffset() * 60;
-      let baselineLocal = 4 * 3600 - offsetSeconds;
-      // Adjust if the result is negative or exceeds a day.
-      if (baselineLocal < 0) baselineLocal += 86400;
-      else if (baselineLocal >= 86400) baselineLocal -= 86400;
-      return baselineLocal;
-    }
-
+    // Compute slot info based on a fixed scheduled start at 04:00 UTC.
     function getSlotInfo() {
-      let now = getCurrentLocalTimeInSeconds();
-      const baseline = getBaselineInLocalSeconds();
-      let diff = now - baseline;
-      if (diff < 0) diff += 86400;
+      const now = new Date();
+      // Build the scheduled start as an absolute timestamp for today at 04:00 UTC.
+      let scheduledStartUTC = Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        4, 0, 0
+      );
+      // If current time is before today's scheduled start, back up one day.
+      if (now.getTime() < scheduledStartUTC) {
+        scheduledStartUTC = Date.UTC(
+          now.getUTCFullYear(),
+          now.getUTCMonth(),
+          now.getUTCDate() - 1,
+          4, 0, 0
+        );
+      }
+      // Difference in seconds from the global (UTC) scheduled start.
+      const diff = Math.floor((now.getTime() - scheduledStartUTC) / 1000);
       const slot = Math.floor(diff / slotDurationSeconds);
       const offset = diff % slotDurationSeconds;
       return { slot, offset };
@@ -180,9 +177,8 @@
               const now = Date.now();
 
               if (pauseTimestamp !== null) {
-                const pausedDuration = Math.floor((now - pauseTimestamp) / 1000);
+                // Update the slot if the pause lasted long enough
                 pauseTimestamp = null;
-
                 const resumedSlotInfo = getSlotInfo();
 
                 if (resumedSlotInfo.slot !== currentSlot) {
