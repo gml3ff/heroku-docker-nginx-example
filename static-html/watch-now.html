@@ -81,7 +81,9 @@
 
   <script defer src="https://www.youtube.com/iframe_api"></script>
   <script>
-    // Adjust the scaling of the TV frame.
+    // -------------------------------
+    // Scaling (unchanged)
+    // -------------------------------
     function updateScale() {
       const container = document.getElementById('tvContainer');
       const scaleWrapper = document.getElementById('scaleWrapper');
@@ -93,12 +95,30 @@
     window.addEventListener('resize', updateScale);
     window.addEventListener('load', updateScale);
 
-    let player;
-    let currentSlot = null;
-    let pauseTimestamp = null;
-    const slotDurationSeconds = 90 * 60; // 90 minutes
+    // -------------------------------
+    // ORIGINAL UTC-Based Timekeeping Logic
+    // -------------------------------
+    const slotDurationSeconds = 90 * 60; // 90 minutes per slot.
+    const slotStartUTC = 4 * 3600;       // 04:00 UTC baseline.
 
-    // Full list of video IDs for standard rotation.
+    // Returns the current UTC time in seconds since midnight.
+    function getCurrentUTCTimeInSeconds() {
+      const now = new Date();
+      return now.getUTCHours() * 3600 + now.getUTCMinutes() * 60 + now.getUTCSeconds();
+    }
+
+    // Computes slot and offset based on UTC.
+    // This remains exactly as in your original file.
+    function getSlotInfo() {
+      let now = getCurrentUTCTimeInSeconds();
+      let diff = now - slotStartUTC;
+      if (diff < 0) diff += 86400;
+      const slot = Math.floor(diff / slotDurationSeconds);
+      const offset = diff % slotDurationSeconds;
+      return { slot, offset };
+    }
+
+    // Original video rotation array.
     const videoIds = [
       "9L0awdHkPnQ", "eCtVDGgVx90", "Hp1mOr_yFgs", "dHAr1JK8gxk",
       "5ZLA5_8ubug", "vfnFjqnRDSo", "zE0f0e2359M", "Q1ivDVHOa_c",
@@ -106,60 +126,23 @@
       "Cr2-7wgh9Lo", "a2TYbFD07qM", "LgiJdjnrX8U", "H38xy-zl21M"
     ];
 
-    // Helper: Detect if the browser is in Eastern Time.
-    // Typically, Eastern Time browsers have getTimezoneOffset() 300 (EST) or 240 (EDT).
-    function isEasternTime() {
-      const offset = new Date().getTimezoneOffset();
-      return (offset === 300 || offset === 240);
-    }
-
-    // Helper: Detect if the browser is in the Central European region.
-    // For winter CET, getTimezoneOffset() is -60; for summer CEST, it's -120.
-    function isCET() {
-      const offset = new Date().getTimezoneOffset();
-      return (offset === -60 || offset === -120);
-    }
-
-    // Computes the current playback slot based on local time.
-    // The baseline is 04:00 (local time). For CET/CEST browsers, we subtract an extra 2 hours (7200 seconds)
-    // to "push the logic back" to the correct schedule.
-    function getSlotInfo() {
-      const now = new Date();
-      let nowSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-
-      if (isCET()) {
-        // Subtract 2 hours for CET/CEST
-        nowSeconds -= 7200;
-        if (nowSeconds < 0) {
-          nowSeconds += 86400;
-        }
-      }
-
-      const baseline = 4 * 3600; // Baseline of 04:00 local time.
-      let diff = nowSeconds - baseline;
-      if (diff < 0) {
-        diff += 86400;
-      }
-      const slot = Math.floor(diff / slotDurationSeconds);
-      const offset = diff % slotDurationSeconds;
-      return { slot, offset };
-    }
-
-    // Loads the video corresponding to the computed slot.
-    // Overrides by timezone:
-    // - Eastern Time: forces video "AY3R03oLbtk" and offset 0.
-    // - CET/CEST: forces video "Cr2-7wgh9Lo" (using the computed offset).
-    // - Otherwise: use the regular rotation.
+    // -------------------------------
+    // Localization Override for Video Selection
+    // -------------------------------
+    // This function wraps the original behavior by overriding the video ID based on the viewer's timezone.
     function loadVideoAtSlot(slot, offset = 0) {
       currentSlot = slot;
-      let videoId;
-      if (isEasternTime()) {
-        videoId = "AY3R03oLbtk";
-        offset = 0;
-      } else if (isCET()) {
-        videoId = "Cr2-7wgh9Lo";
-      } else {
-        videoId = videoIds[slot % videoIds.length];
+      // Use the original rotation index:
+      let videoId = videoIds[slot % videoIds.length];
+      // Get the browser's timezone offset (in minutes).
+      const tzOffset = new Date().getTimezoneOffset();
+      // Note: getTimezoneOffset() is the number of minutes _behind_ UTC.
+      // For Eastern Time, typical values are 240 (EDT) or 300 (EST).
+      // For CET, typical values are -60 (winter) or -120 (summer).
+      if (tzOffset === 300 || tzOffset === 240) {
+        videoId = "AY3R03oLbtk";  // Eastern Time override.
+      } else if (tzOffset === -60 || tzOffset === -120) {
+        videoId = "Cr2-7wgh9Lo";  // CET override.
       }
       player.loadVideoById({
         videoId: videoId,
@@ -167,12 +150,17 @@
       });
     }
 
-    // YouTube API ready callback.
+    // -------------------------------
+    // YouTube Player Integration
+    // -------------------------------
+    let player;
+    let currentSlot = null;
+    let pauseTimestamp = null;
     function onYouTubeIframeAPIReady() {
       const { slot, offset } = getSlotInfo();
       currentSlot = slot;
       player = new YT.Player('ytplayer', {
-        videoId: videoIds[slot % videoIds.length],
+        videoId: videoIds[slot % videoIds.length],  // temporary; will be overridden onReady.
         playerVars: {
           autoplay: 1,
           controls: 0,
@@ -183,6 +171,7 @@
         },
         events: {
           onReady: function (event) {
+            // Recalculate slot info (in case time has advanced slightly) and load the video with our timezone override.
             const { slot, offset } = getSlotInfo();
             loadVideoAtSlot(slot, offset);
             const container = document.getElementById('videoContainer');
