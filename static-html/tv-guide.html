@@ -9,11 +9,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=block" rel="stylesheet" />
   <style>
-    /* Universal box-sizing to help Mobile Safari compute percentages correctly */
+    /* Universal box-sizing helps Mobile Safari compute percentages correctly */
     *, *::before, *::after {
       box-sizing: border-box;
     }
-
+    
     html, body {
       margin: 0;
       padding: 0;
@@ -24,7 +24,7 @@
       font-family: 'Press Start 2P', cursive;
       visibility: hidden;
     }
-
+    
     .page-wrapper {
       display: flex;
       align-items: center;
@@ -32,7 +32,7 @@
       height: 100vh;
       width: 100vw;
     }
-
+    
     .tv-container {
       background: #171DA8;
       position: relative;
@@ -44,7 +44,7 @@
       background-repeat: no-repeat;
       background-position: center;
     }
-
+    
     /* Scale-wrapper with vendor prefixes for proper scaling */
     .scale-wrapper {
       position: absolute;
@@ -59,8 +59,8 @@
       -moz-transform-origin: top left;
       -moz-transform: scale(var(--scale));
     }
-
-    /* Normal video-container positioning with hardware acceleration hints */
+    
+    /* Update video-container to match about.html: top remains 65px; left changes from 205px to 280px */
     .video-container {
       position: absolute;
       top: 65px;
@@ -69,11 +69,12 @@
       height: 470px;
       transform-origin: top left;
       background-color: transparent;
+      /* Retaining hardware acceleration hints */
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
       will-change: transform;
     }
-
+    
     .vhs-message {
       width: 100%;
       height: 100%;
@@ -83,11 +84,11 @@
       text-align: center;
       animation: track 5ms infinite;
     }
-
+    
     .vhs-message span {
       animation: blur 30ms infinite, flick 50ms infinite, jump 50ms infinite;
     }
-
+    
     h1, h3 {
       margin: 1em 0;
       color: #fff;
@@ -95,21 +96,21 @@
       filter: blur(1px);
       text-align: left;
     }
-
+    
     h1 {
       font-size: 2.4em;
     }
-
+    
     h3 {
       font-size: 0.8em;
     }
-
+    
     /* Wrapper for the scrollable table and fixed indicator */
     .about-wrapper {
       position: relative;
       max-height: 215px;
     }
-
+    
     .about-body {
       overflow-y: scroll;
       padding-top: 1%;
@@ -121,26 +122,26 @@
       scrollbar-width: none;
       -ms-overflow-style: none;
     }
-
+    
     .about-body::-webkit-scrollbar {
       width: 6px;
     }
-
+    
     .about-body::-webkit-scrollbar-track {
       background: transparent;
     }
-
+    
     .about-body::-webkit-scrollbar-thumb {
       background-color: rgba(255, 255, 255, 0.2);
       border-radius: 3px;
       transition: background-color 0.3s ease;
     }
-
+    
     .about-body:hover::-webkit-scrollbar-thumb {
       background-color: rgba(255, 255, 255, 0.5);
     }
-
-    /* Table styling – preserving original width of 130% */
+    
+    /* Table styling – preserving the original width of 130% */
     .table-text {
       border-collapse: collapse;
       border: 2px solid white;
@@ -153,7 +154,7 @@
       filter: blur(0.5px);
       width: 130%;
     }
-
+    
     .table-text td,
     .table-text th {
       border: 2px solid white;
@@ -162,13 +163,13 @@
       -webkit-transform: translateZ(0);
       transform: translateZ(0);
     }
-
+    
     .cell-content {
       padding: 10px 30px;
       white-space: normal;
       word-wrap: break-word;
     }
-
+    
     .table-text td a {
       display: block;
       width: 100%;
@@ -176,28 +177,29 @@
       text-decoration: none;
       color: inherit;
     }
-
+    
     .table-text td:hover {
       background-color: white;
       color: #171DA8;
       cursor: pointer;
     }
-
+    
     .table-text td:hover a,
     .table-text td:hover .cell-content {
       color: inherit;
     }
-
+    
     .table-text td.no-hover:hover {
       background-color: transparent;
       color: inherit;
       cursor: default;
     }
-
+    
+    /* Adjust the scroll-indicator positioning to match about.html */
     .scroll-indicator {
       position: absolute;
-      bottom: 5px;
-      left: 35%;
+      bottom: -20px;
+      left: 28%;
       transform: translateX(-50%);
       text-align: center;
       font-size: 0.6em;
@@ -209,17 +211,17 @@
       pointer-events: none;
       width: 100%;
     }
-
+    
     a {
       color: white;
       text-decoration: none;
     }
-
+    
     a:hover {
       color: #171DA8;
       background-color: white;
     }
-
+    
     .tv-foreground {
       position: absolute;
       top: 0;
@@ -229,7 +231,7 @@
       pointer-events: none;
       z-index: 10;
     }
-
+    
     @keyframes blur {
       0%, 100% {
         filter: blur(1px);
@@ -240,17 +242,25 @@
         opacity: 1;
       }
     }
-
+    
     @keyframes flick {
-      50% { left: 2px; }
-      51% { left: 0; }
+      50% {
+        left: 2px;
+      }
+      51% {
+        left: 0;
+      }
     }
-
+    
     @keyframes jump {
-      30% { top: 1px; }
-      31% { top: 0; }
+      30% {
+        top: 1px;
+      }
+      31% {
+        top: 0;
+      }
     }
-
+    
     @keyframes appear {
       0%, 100% {
         filter: blur(5px);
@@ -261,14 +271,22 @@
         opacity: 0.85;
       }
     }
-
+    
     @keyframes big-jump {
-      0%, 12%, 54%, 56%, 86%, 88% { top: 0; }
-      10% { top: -10px; }
-      55% { top: -30px; }
-      87% { top: -60px; }
+      0%, 12%, 54%, 56%, 86%, 88% {
+        top: 0;
+      }
+      10% {
+        top: -10px;
+      }
+      55% {
+        top: -30px;
+      }
+      87% {
+        top: -60px;
+      }
     }
-
+    
     @-webkit-keyframes track {
       40% {
         opacity: 1;
@@ -295,21 +313,17 @@
         transform: scale(1, 1) skew(0, 0);
       }
     }
-
-    /* Mobile Safari–specific rules using a feature query */
+    
+    /* Mobile Safari–specific override using a feature query */
     @supports (-webkit-touch-callout: none) {
       .video-container {
+        /* Use the about.html left offset (280px) multiplied by scale */
         top: calc(65px * var(--scale)) !important;
-        left: calc(50px * var(--scale) + 30px) !important;
-      }
-      .vhs-message {
-         padding-left: -25% !important;
-         padding-right: -5% !important;
+        left: calc(280px * var(--scale)) !important;
       }
     }
   </style>
 </head>
-
 <body>
   <div class="page-wrapper">
     <div class="tv-container" id="tvContainer">
@@ -444,7 +458,7 @@
       const scale = actualWidth / targetWidth;
       scaleWrapper.style.setProperty('--scale', scale);
     }
-
+    
     async function waitForReady() {
       const font = new FontFace('Press Start 2P', 'url(https://fonts.gstatic.com/s/pressstart2p/v11/e3t4euO8T-267oIAQAu6jDQyKPRJ1_U.woff2)');
       try {
@@ -462,17 +476,17 @@
       document.body.style.visibility = 'visible';
       requestAnimationFrame(updateScale);
     }
-
+    
     waitForReady();
     window.addEventListener('resize', updateScale);
     window.addEventListener('pageshow', updateScale);
-
-    // Original scroll-indicator hover behavior for the scrollable about-body.
+    
+    // Preserve the original scroll-indicator hover behavior
     document.addEventListener("DOMContentLoaded", () => {
       const aboutBody = document.querySelector(".about-body");
       const scrollIndicator = document.querySelector(".scroll-indicator");
       let scrollingTimer = null;
-
+    
       function checkScroll() {
         const isScrollable = aboutBody.scrollHeight > aboutBody.clientHeight;
         const isAtBottom = aboutBody.scrollTop + aboutBody.clientHeight >= aboutBody.scrollHeight - 1;
@@ -484,7 +498,7 @@
           scrollIndicator.style.opacity = "0";
         }
       }
-
+    
       aboutBody.addEventListener("scroll", () => {
         scrollIndicator.style.opacity = "0";
         clearTimeout(scrollingTimer);
@@ -493,7 +507,7 @@
           checkScroll();
         }, 150);
       });
-
+    
       aboutBody.addEventListener("mouseenter", checkScroll);
       aboutBody.addEventListener("mouseleave", () => {
         scrollIndicator.style.opacity = "0";
