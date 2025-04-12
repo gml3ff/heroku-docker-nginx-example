@@ -10,6 +10,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=block" rel="stylesheet" />
   <style>
+    /* Ensure percentage paddings are computed as expected */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    /* Fix Mobile Safari reflow issues for table cells */
+    .table-text td,
+    .table-text th {
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
+
     html,
     body {
       margin: 0;
@@ -42,7 +56,7 @@
       background-position: center;
     }
 
-    /* Updated: Added vendor prefixes for cross-browser support */
+    /* Use vendor prefixes to ensure correct scaling across browsers */
     .scale-wrapper {
       position: absolute;
       top: 0;
@@ -57,7 +71,7 @@
       -moz-transform: scale(var(--scale));
     }
 
-    /* Updated: Added backface-visibility and will-change to stabilize positioning */
+    /* Force GPU acceleration on the video-container to stabilize its position */
     .video-container {
       position: absolute;
       top: 65px;
@@ -336,7 +350,9 @@
                 <div class="about-body">
                   <table class="table-text">
                     <tr>
-                      <td colspan="3" style="font-size: 1.2em; padding-left: 2%; padding-top: 2%; padding-bottom: 2%;" class="no-hover">daytime program</td>
+                      <td colspan="3" style="font-size: 1.2em; padding-left: 2%; padding-top: 2%; padding-bottom: 2%;" class="no-hover">
+                        daytime program
+                      </td>
                     </tr>
                     <tr>
                       <td>
@@ -397,7 +413,9 @@
                       </td>
                     </tr>
                     <tr>
-                      <td colspan="3" style="font-size: 1.2em; padding-left: 2%; padding-top: 2%; padding-bottom: 2%;" class="no-hover">nighttime program</td>
+                      <td colspan="3" style="font-size: 1.2em; padding-left: 2%; padding-top: 2%; padding-bottom: 2%;" class="no-hover">
+                        nighttime program
+                      </td>
                     </tr>
                     <tr>
                       <td>
