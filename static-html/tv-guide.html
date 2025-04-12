@@ -10,20 +10,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=block" rel="stylesheet" />
   <style>
-    /* Ensure percentage paddings are computed as expected */
-    *,
-    *::before,
-    *::after {
+    /* Universal box-sizing */
+    *, *::before, *::after {
       box-sizing: border-box;
     }
-
-    /* Fix Mobile Safari reflow issues for table cells */
-    .table-text td,
-    .table-text th {
-      -webkit-transform: translateZ(0);
-      transform: translateZ(0);
-    }
-
+    
     html,
     body {
       margin: 0;
@@ -56,7 +47,7 @@
       background-position: center;
     }
 
-    /* Use vendor prefixes to ensure correct scaling across browsers */
+    /* Scale-wrapper with vendor prefixes for proper scaling */
     .scale-wrapper {
       position: absolute;
       top: 0;
@@ -71,7 +62,7 @@
       -moz-transform: scale(var(--scale));
     }
 
-    /* Force GPU acceleration on the video-container to stabilize its position */
+    /* video-container: force hardware acceleration and use natural offsets */
     .video-container {
       position: absolute;
       top: 65px;
@@ -152,7 +143,7 @@
       background-color: rgba(255, 255, 255, 0.5);
     }
 
-    /* Table styling – using the original width of 130% to preserve layout */
+    /* Table styling – keeping your original width of 130% */
     .table-text {
       border-collapse: collapse;
       border: 2px solid white;
@@ -166,22 +157,21 @@
       width: 130%;
     }
 
-    /* Remove the TD padding and set position relative for overlaying the link */
     .table-text td,
     .table-text th {
       border: 2px solid white;
       padding: 0;
       position: relative;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
     }
 
-    /* The inner wrapper preserves the original padding and text wrapping */
     .cell-content {
       padding: 10px 30px;
       white-space: normal;
       word-wrap: break-word;
     }
 
-    /* The anchor covers the entire cell */
     .table-text td a {
       display: block;
       width: 100%;
@@ -190,7 +180,6 @@
       color: inherit;
     }
 
-    /* Hover effects to match the original */
     .table-text td:hover {
       background-color: white;
       color: #171DA8;
@@ -208,7 +197,6 @@
       cursor: default;
     }
 
-    /* Fixed scroll-indicator positioned at bottom center of the wrapper */
     .scroll-indicator {
       position: absolute;
       bottom: 5px;
@@ -245,7 +233,6 @@
       z-index: 10;
     }
 
-    /* Animations */
     @keyframes blur {
       0%,
       100% {
@@ -332,6 +319,15 @@
         top: 0;
         left: 0;
         transform: scale(1, 1) skew(0, 0);
+      }
+    }
+
+    /* Mobile Safari-specific adjustments (if needed) */
+    @media screen and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 2) {
+      .video-container {
+        /* Adjust offsets by the scale factor */
+        top: calc(65px * var(--scale)) !important;
+        left: calc(205px * var(--scale)) !important;
       }
     }
   </style>
@@ -487,44 +483,14 @@
         img.onerror = res;
       });
       document.body.style.visibility = 'visible';
-      updateScale();
+      // Use requestAnimationFrame to force a reflow after the page becomes visible
+      requestAnimationFrame(updateScale);
     }
 
     waitForReady();
+
     window.addEventListener('resize', updateScale);
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const aboutBody = document.querySelector(".about-body");
-      const scrollIndicator = document.querySelector(".scroll-indicator");
-      let scrollingTimer = null;
-
-      function checkScroll() {
-        const isScrollable = aboutBody.scrollHeight > aboutBody.clientHeight;
-        const isAtBottom = aboutBody.scrollTop + aboutBody.clientHeight >= aboutBody.scrollHeight - 1;
-        if (!isScrollable || isAtBottom) {
-          scrollIndicator.style.opacity = "0";
-        } else if (aboutBody.matches(":hover") && !scrollingTimer) {
-          scrollIndicator.style.opacity = "1";
-        } else {
-          scrollIndicator.style.opacity = "0";
-        }
-      }
-
-      aboutBody.addEventListener("scroll", () => {
-        scrollIndicator.style.opacity = "0";
-        clearTimeout(scrollingTimer);
-        scrollingTimer = setTimeout(() => {
-          scrollingTimer = null;
-          checkScroll();
-        }, 150);
-      });
-
-      aboutBody.addEventListener("mouseenter", checkScroll);
-      aboutBody.addEventListener("mouseleave", () => {
-        scrollIndicator.style.opacity = "0";
-      });
-      checkScroll();
-    });
+    window.addEventListener('pageshow', updateScale);
   </script>
 </body>
 
