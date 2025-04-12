@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <title>tv guide</title>
@@ -10,11 +11,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=block" rel="stylesheet" />
   <style>
     /* Universal box-sizing to help browsers compute percentages correctly */
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       box-sizing: border-box;
     }
-    
-    html, body {
+
+    html,
+    body {
       margin: 0;
       padding: 0;
       height: 100%;
@@ -24,7 +28,7 @@
       font-family: 'Press Start 2P', cursive;
       visibility: hidden;
     }
-    
+
     .page-wrapper {
       display: flex;
       align-items: center;
@@ -32,7 +36,7 @@
       height: 100vh;
       width: 100vw;
     }
-    
+
     .tv-container {
       background: #171DA8;
       position: relative;
@@ -44,7 +48,7 @@
       background-repeat: no-repeat;
       background-position: center;
     }
-    
+
     /* Scale-wrapper with vendor prefixes for proper scaling */
     .scale-wrapper {
       position: absolute;
@@ -59,7 +63,7 @@
       -moz-transform-origin: top left;
       -moz-transform: scale(var(--scale));
     }
-    
+
     /* Base video-container styling (Chrome’s values) */
     .video-container {
       position: absolute;
@@ -74,7 +78,7 @@
       -webkit-backface-visibility: hidden;
       will-change: transform;
     }
-    
+
     .vhs-message {
       width: 100%;
       height: 100%;
@@ -84,33 +88,34 @@
       text-align: center;
       animation: track 5ms infinite;
     }
-    
+
     .vhs-message span {
       animation: blur 30ms infinite, flick 50ms infinite, jump 50ms infinite;
     }
-    
-    h1, h3 {
+
+    h1,
+    h3 {
       margin: 1em 0;
       color: #fff;
       text-shadow: 1px 3px green, -2px -3px red;
       filter: blur(1px);
       text-align: left;
     }
-    
+
     h1 {
       font-size: 2.4em;
     }
-    
+
     h3 {
       font-size: 0.8em;
     }
-    
+
     /* Wrapper for the scrollable table and fixed indicator */
     .about-wrapper {
       position: relative;
       max-height: 215px;
     }
-    
+
     .about-body {
       overflow-y: scroll;
       padding-top: 1%;
@@ -122,25 +127,25 @@
       scrollbar-width: none;
       -ms-overflow-style: none;
     }
-    
+
     .about-body::-webkit-scrollbar {
       width: 6px;
     }
-    
+
     .about-body::-webkit-scrollbar-track {
       background: transparent;
     }
-    
+
     .about-body::-webkit-scrollbar-thumb {
       background-color: rgba(255, 255, 255, 0.2);
       border-radius: 3px;
       transition: background-color 0.3s ease;
     }
-    
+
     .about-body:hover::-webkit-scrollbar-thumb {
       background-color: rgba(255, 255, 255, 0.5);
     }
-    
+
     /* Table styling – preserving original width of 130% */
     .table-text {
       border-collapse: collapse;
@@ -154,7 +159,7 @@
       filter: blur(0.5px);
       width: 130%;
     }
-    
+
     .table-text td,
     .table-text th {
       border: 2px solid white;
@@ -163,13 +168,13 @@
       -webkit-transform: translateZ(0);
       transform: translateZ(0);
     }
-    
+
     .cell-content {
       padding: 10px 30px;
       white-space: normal;
       word-wrap: break-word;
     }
-    
+
     .table-text td a {
       display: block;
       width: 100%;
@@ -177,24 +182,24 @@
       text-decoration: none;
       color: inherit;
     }
-    
+
     .table-text td:hover {
       background-color: white;
       color: #171DA8;
       cursor: pointer;
     }
-    
+
     .table-text td:hover a,
     .table-text td:hover .cell-content {
       color: inherit;
     }
-    
+
     .table-text td.no-hover:hover {
       background-color: transparent;
       color: inherit;
       cursor: default;
     }
-    
+
     /* Scroll-indicator styling (matches about.html) */
     .scroll-indicator {
       position: absolute;
@@ -211,17 +216,17 @@
       pointer-events: none;
       width: 100%;
     }
-    
+
     a {
       color: white;
       text-decoration: none;
     }
-    
+
     a:hover {
       color: #171DA8;
       background-color: white;
     }
-    
+
     .tv-foreground {
       position: absolute;
       top: 0;
@@ -231,34 +236,79 @@
       pointer-events: none;
       z-index: 10;
     }
-    
+
     @keyframes blur {
-      0%, 100% { filter: blur(1px); opacity: 0.8; }
-      50% { filter: blur(1px); opacity: 1; }
+
+      0%,
+      100% {
+        filter: blur(1px);
+        opacity: 0.8;
+      }
+
+      50% {
+        filter: blur(1px);
+        opacity: 1;
+      }
     }
-    
+
     @keyframes flick {
-      50% { left: 2px; }
-      51% { left: 0; }
+      50% {
+        left: 2px;
+      }
+
+      51% {
+        left: 0;
+      }
     }
-    
+
     @keyframes jump {
-      30% { top: 1px; }
-      31% { top: 0; }
+      30% {
+        top: 1px;
+      }
+
+      31% {
+        top: 0;
+      }
     }
-    
+
     @keyframes appear {
-      0%, 100% { filter: blur(5px); opacity: 0.85; }
-      50% { filter: blur(3px); opacity: 0.85; }
+
+      0%,
+      100% {
+        filter: blur(5px);
+        opacity: 0.85;
+      }
+
+      50% {
+        filter: blur(3px);
+        opacity: 0.85;
+      }
     }
-    
+
     @keyframes big-jump {
-      0%, 12%, 54%, 56%, 86%, 88% { top: 0; }
-      10% { top: -10px; }
-      55% { top: -30px; }
-      87% { top: -60px; }
+
+      0%,
+      12%,
+      54%,
+      56%,
+      86%,
+      88% {
+        top: 0;
+      }
+
+      10% {
+        top: -10px;
+      }
+
+      55% {
+        top: -30px;
+      }
+
+      87% {
+        top: -60px;
+      }
     }
-    
+
     @-webkit-keyframes track {
       40% {
         opacity: 1;
@@ -266,18 +316,21 @@
         left: 0;
         transform: scale(1, 1) skew(0, 0);
       }
+
       41% {
         opacity: 0.8;
         top: 0;
         left: -1px;
         transform: scale(1, 1.2) skew(10deg, 0);
       }
+
       42% {
         opacity: 0.8;
         top: 0;
         left: 1px;
         transform: scale(1, 1.2) skew(-15deg, 0);
       }
+
       43% {
         opacity: 1;
         top: 0;
@@ -285,15 +338,28 @@
         transform: scale(1, 1) skew(0, 0);
       }
     }
-    
+
     /* Safari-specific overrides so tv-guide.html behaves exactly like Chrome.
        We use a feature query to target WebKit-based browsers (Safari). */
     @supports (-webkit-touch-callout: none) {
       .video-container {
-        /* Override left to 205px as in about.html (Chrome behavior) */
-        /*left: 205px !important;*/
-        left: 25%;
+        position: absolute;
+        top: 65px;
+        left: 380px;
+        width: 480px;
+        /* padding-right: 50px; */
+        height: 470px;
+        transform-origin: top left;
+        background-color: transparent;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        will-change: transform;
       }
+
+      .table-text {
+        width: 80%;
+      }
+
       .scroll-indicator {
         bottom: -20px !important;
         left: 50% !important;
@@ -302,6 +368,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="page-wrapper">
     <div class="tv-container" id="tvContainer">
@@ -315,7 +382,8 @@
                 <div class="about-body">
                   <table class="table-text">
                     <tr>
-                      <td colspan="3" style="font-size: 1.2em; padding-left: 2%; padding-top: 2%; padding-bottom: 2%;" class="no-hover">
+                      <td colspan="3" style="font-size: 1.2em; padding-left: 2%; padding-top: 2%; padding-bottom: 2%;"
+                        class="no-hover">
                         daytime program
                       </td>
                     </tr>
@@ -378,7 +446,8 @@
                       </td>
                     </tr>
                     <tr>
-                      <td colspan="3" style="font-size: 1.2em; padding-left: 2%; padding-top: 2%; padding-bottom: 2%;" class="no-hover">
+                      <td colspan="3" style="font-size: 1.2em; padding-left: 2%; padding-top: 2%; padding-bottom: 2%;"
+                        class="no-hover">
                         nighttime program
                       </td>
                     </tr>
@@ -436,7 +505,7 @@
       const scale = actualWidth / targetWidth;
       scaleWrapper.style.setProperty('--scale', scale);
     }
-    
+
     async function waitForReady() {
       const font = new FontFace('Press Start 2P', 'url(https://fonts.gstatic.com/s/pressstart2p/v11/e3t4euO8T-267oIAQAu6jDQyKPRJ1_U.woff2)');
       try {
@@ -454,17 +523,17 @@
       document.body.style.visibility = 'visible';
       requestAnimationFrame(updateScale);
     }
-    
+
     waitForReady();
     window.addEventListener('resize', updateScale);
     window.addEventListener('pageshow', updateScale);
-    
+
     // Preserve the original scroll-indicator hover behavior for the about-body
     document.addEventListener("DOMContentLoaded", () => {
       const aboutBody = document.querySelector(".about-body");
       const scrollIndicator = document.querySelector(".scroll-indicator");
       let scrollingTimer = null;
-    
+
       function checkScroll() {
         const isScrollable = aboutBody.scrollHeight > aboutBody.clientHeight;
         const isAtBottom = aboutBody.scrollTop + aboutBody.clientHeight >= aboutBody.scrollHeight - 1;
@@ -476,7 +545,7 @@
           scrollIndicator.style.opacity = "0";
         }
       }
-    
+
       aboutBody.addEventListener("scroll", () => {
         scrollIndicator.style.opacity = "0";
         clearTimeout(scrollingTimer);
@@ -485,7 +554,7 @@
           checkScroll();
         }, 150);
       });
-    
+
       aboutBody.addEventListener("mouseenter", checkScroll);
       aboutBody.addEventListener("mouseleave", () => {
         scrollIndicator.style.opacity = "0";
@@ -494,4 +563,5 @@
     });
   </script>
 </body>
+
 </html>
