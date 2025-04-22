@@ -1,29 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script>
-    (function(h,o,u,n,d) {
-      h=h[d]=h[d]||{q:[],onReady:function(c){h.q.push(c)}}
-      d=o.createElement(u);d.async=1;d.src=n
-      n=o.getElementsByTagName(u)[0];n.parentNode.insertBefore(d,n)
-    })(window,document,'script','https://www.datadoghq-browser-agent.com/us1/v6/datadog-rum.js','DD_RUM')
-    window.DD_RUM.onReady(function() {
-      window.DD_RUM.init({
-        clientToken: 'pub1e774079a247568cfd80a5da76971d5a',
-        applicationId: 'a7d2078c-10ec-4ea1-9ea4-90751d5e7cdd',
-        // `site` refers to the Datadog site parameter of your organization
-        // see https://docs.datadoghq.com/getting_started/site/
-        site: 'datadoghq.com',
-        service: 'tv.lupton.io',
-        env: '<ENV_NAME>',
-        // Specify a version number to identify the deployed version of your application in Datadog
-        // version: '1.0.0',
-        sessionSampleRate: 100,
-        sessionReplaySampleRate: 100,
-        defaultPrivacyLevel: 'mask-user-input',
-      });
-    })
-  </script>
   <meta charset="utf-8" />
   <title>watch now</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon_io/favicon.ico">

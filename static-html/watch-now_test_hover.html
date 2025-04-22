@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>watch now</title>
+    <link rel="icon" type="image/x-icon" href="../images/favicon_io/favicon.ico">
+    <link rel="preload" as="image" href="../images/tv_with_cover_wmenu_button.png">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tv-container {
+            position: relative;
+            width: 100vw;
+            max-width: 100vw;
+            aspect-ratio: 1114 / 699;
+            background-image: url('../images/tv_with_cover_wmenu_button.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .scale-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1114px;
+            height: 699px;
+            transform-origin: top left;
+            transform: scale(var(--scale));
+            z-index: 1;
+        }
+
+        .video-container {
+            position: absolute;
+            top: 80px;
+            left: 135px;
+            width: 675px;
+            height: 470px;
+            transform-origin: top left;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .video-container.ready {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        #ytplayer {
+            width: 100%;
+            height: 100%;
+            border: none;
+            z-index: 0;
+        }
+
+        /* TV frame overlay (kept below the hover elements) */
+        .tv-foreground {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* The hoverable menu-button area (60×60) centered at (920,165) */
+        .menu-button {
+            position: absolute;
+            left: 890px;
+            /* 920 - 30 */
+            top: 135px;
+            /* 165 - 30 */
+            width: 60px;
+            height: 60px;
+            z-index: 13;
+            /* on top of everything */
+            cursor: pointer;
+        }
+
+        /* Glow effect on the hoverable area */
+        .menu-button:hover {
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+
+        /* The full–size overlay image that appears on hover */
+        .menu-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1114px;
+            height: 699px;
+            background: url('../images/menu_button_only.png') no-repeat center center;
+            background-size: contain;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 12;
+        }
+
+        /* Show the overlay when hovering over the menu-button */
+        .menu-button:hover+.menu-overlay {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="tv-container" id="tvContainer">
+        <img alt="TV frame" class="tv-foreground" src="../images/tv_with_cover_wmenu_button.png" />
+
+        <div class="scale-wrapper" id="scaleWrapper">
+            <div class="video-container" id="videoContainer">
+                <div id="ytplayer" loading="lazy"></div>
+            </div>
+            <a href="index.html">
+                <!-- The interactive (hoverable) menu area -->
+                <div class="menu-button"></div>
+                <!-- Full–size overlay image that pops up on hover -->
+                <div class="menu-overlay"></div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Load YouTube IFrame API -->
+    <script defer src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        // -------------------------------
+        // Scaling
+        // -------------------------------
+        function updateScale() {
+            const container = document.getElementById('tvContainer');
+            const scaleWrapper = document.getElementById('scaleWrapper');
+            const targetWidth = 1114;
+            const actualWidth = container.clientWidth;
+            const scale = actualWidth / targetWidth;
+            scaleWrapper.style.setProperty('--scale', scale);
+        }
+        window.addEventListener('resize', updateScale);
+        window.addEventListener('load', updateScale);
+
+        // -------------------------------
+        // Global Schedule (Local Time-Based)
+        // -------------------------------
+        function getCurrentLocalTimeInSeconds() {
+            const now = new Date();
+            return now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+        }
+        function getEffectiveTime() {
+            const localSeconds = getCurrentLocalTimeInSeconds();
+            let effective = localSeconds - (6 * 3600);
+            if (effective < 0) {
+                effective += 86400;
+            }
+            return effective;
+        }
+        function getSlotInfo() {
+            const effective = getEffectiveTime();
+            const slotDuration = 90 * 60;
+            const slot = Math.floor(effective / slotDuration);
+            const offset = effective % slotDuration;
+            return { slot, offset };
+        }
+        // -------------------------------
+        // Video Rotation from Provided Table
+        // -------------------------------
+        const videoIds = [
+            "9L0awdHkPnQ",  // Slot 0: 06:00-07:30
+            "eCtVDGgVx90",  // Slot 1: 07:30-09:00
+            "Hp1mOr_yFgs",  // Slot 2: 09:00-10:30
+            "dHAr1JK8gxk",  // Slot 3: 10:30-12:00
+            "5ZLA5_8ubug",  // Slot 4: 12:00-13:30
+            "vfnFjqnRDSo",  // Slot 5: 13:30-15:00
+            "zE0f0e2359M",  // Slot 6: 15:00-16:30
+            "Q1ivDVHOa_c",  // Slot 7: 16:30-18:00
+            "AY3R03oLbtk",  // Slot 8: 18:00-19:30
+            "dmKmr3Wom38",  // Slot 9: 19:30-21:00
+            "ULV4I22rey4",  // Slot 10: 21:00-22:30
+            "r-KDJvb8Zs4",  // Slot 11: 22:30-00:00
+            "Cr2-7wgh9Lo",  // Slot 12: 00:00-01:30
+            "a2TYbFD07qM",  // Slot 13: 01:30-03:00
+            "LgiJdjnrX8U",  // Slot 14: 03:00-04:30
+            "H38xy-zl21M"   // Slot 15: 04:30-06:00
+        ];
+        function loadVideoAtSlot(slot, offset = 0) {
+            currentSlot = slot;
+            const videoId = videoIds[slot % videoIds.length];
+            player.loadVideoById({
+                videoId: videoId,
+                startSeconds: offset
+            });
+        }
+        // -------------------------------
+        // YouTube API Integration and State Management
+        // -------------------------------
+        let player;
+        let currentSlot = null;
+        let pauseTimestamp = null;
+        function onYouTubeIframeAPIReady() {
+            const { slot, offset } = getSlotInfo();
+            currentSlot = slot;
+            player = new YT.Player('ytplayer', {
+                videoId: videoIds[slot % videoIds.length],
+                playerVars: {
+                    autoplay: 1,
+                    controls: 0,
+                    modestbranding: 0,
+                    rel: 0,
+                    fs: 0,
+                    iv_load_policy: 3
+                },
+                events: {
+                    onReady: function (event) {
+                        const { slot, offset } = getSlotInfo();
+                        loadVideoAtSlot(slot, offset);
+                        const container = document.getElementById('videoContainer');
+                        requestAnimationFrame(() => {
+                            container.classList.add('ready');
+                        });
+                    },
+                    onStateChange: function (event) {
+                        if (event.data === YT.PlayerState.PAUSED) {
+                            pauseTimestamp = Date.now();
+                        }
+                        if (event.data === YT.PlayerState.PLAYING) {
+                            if (pauseTimestamp !== null) {
+                                pauseTimestamp = null;
+                                const resumedSlotInfo = getSlotInfo();
+                                if (resumedSlotInfo.slot !== currentSlot) {
+                                    loadVideoAtSlot(resumedSlotInfo.slot, resumedSlotInfo.offset);
+                                } else {
+                                    const newOffset = resumedSlotInfo.offset;
+                                    const currentPlayback = player.getCurrentTime();
+                                    if (Math.abs(currentPlayback - newOffset) > 2) {
+                                        player.seekTo(newOffset, true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
