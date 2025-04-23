@@ -23,7 +23,7 @@ Automatically plays a mix corresponding to your browser's current time. There ar
 Allows you to select any one of the 1.5 hr slots at your convenience. I have listed the styles of each of these mixes below. All times are listed in 24 hour time to eliminate confusion. 
 
 #### Daytime Program
-- **06:00-07:30**: Ambient, Jazz, Rock, Balearic
+- **06:00-07:30**: Ambient, Jazz, Rock, Balearic, Dub, Reggae
 - **07:30-09:00**: Jazz, Funk, Soul, New Wave
 - **09:00-10:30**: Electronic, Downtempo, Rock, Jazz
 - **10:30-12:00**: Hip Hop, Soul
