@@ -44,4 +44,9 @@ EXPOSE 8125/udp 8126/tcp
 # Copy your Datadog configuration
 COPY datadog-config/ /etc/datadog-agent/
 
+# Start Datadog agent
+RUN datadog-agent run &
+/opt/datadog-agent/embedded/bin/trace-agent --config=/etc/datadog-agent/datadog.yaml &
+/opt/datadog-agent/embedded/bin/process-agent --config=/etc/datadog-agent/datadog.yaml
+
 CMD ["/entrypoint.sh"]
