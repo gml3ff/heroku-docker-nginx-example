@@ -27,7 +27,7 @@
   <meta charset="utf-8" />
   <title>home</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon_io/favicon.ico">
-  <link rel="preload" as="image" href="../images/tv_with_cover.png">
+  <link rel="preload" as="image" href="../images/tv_with_cover_wmenu_button.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=block" rel="stylesheet" />
@@ -58,7 +58,7 @@
       width: 100vw;
       max-width: 100vw;
       aspect-ratio: 1114 / 699;
-      background-image: url('../images/tv_with_cover.png');
+      background-image: url('../images/tv_with_cover_wmenu_button.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -133,6 +133,24 @@
       z-index: 10;
     }
 
+    .clickable-glow {
+      position: absolute;
+      z-index: 20;
+      cursor: pointer;
+      transform-origin: top left;
+      background-image: url('../images/menu_button_default.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .clickable-glow:hover {
+      background-image: url('../images/menu_button_only.png');
+      text-decoration: none;
+      background-color: transparent !important;
+      color: inherit !important;
+    }
+
     .line {
       padding-left: 21%;
       width: 42%;
@@ -184,6 +202,8 @@
 <body>
   <div class="page-wrapper">
     <div class="tv-container" id="tvContainer">
+      <a href="../static-html/index.html" class="clickable-glow" id="glowButton" title="Click here"></a>
+
       <div class="scale-wrapper" id="scaleWrapper">
         <div class="video-container">
           <div class="vhs-message">
@@ -203,7 +223,7 @@
           </div>
         </div>
       </div>
-      <img alt="TV frame" class="tv-foreground" src="../images/tv_with_cover_lowopacity.png" />
+      
     </div>
   </div>
 
@@ -215,8 +235,24 @@
       const actualWidth = container.clientWidth;
       const scale = actualWidth / targetWidth;
       scaleWrapper.style.setProperty('--scale', scale);
-    }
 
+      positionGlowButton();
+
+    }
+    function positionGlowButton() {
+      const button = document.getElementById('glowButton');
+      const container = document.getElementById('tvContainer');
+      const baseLeft = 905;
+      const baseTop = 142;
+      const baseWidth = 42;
+      const baseHeight = 42;
+      const scale = container.clientWidth / 1114;
+
+      button.style.left = `${baseLeft * scale}px`;
+      button.style.top = `${baseTop * scale}px`;
+      button.style.width = `${baseWidth * scale}px`;
+      button.style.height = `${baseHeight * scale}px`;
+    }
     async function waitForReady() {
       const font = new FontFace('Press Start 2P', 'url(https://fonts.gstatic.com/s/pressstart2p/v11/e3t4euO8T-267oIAQAu6jDQyKPRJ1_U.woff2)');
       try {
@@ -227,7 +263,7 @@
       }
 
       const img = new Image();
-      img.src = "../images/tv_with_cover.png";
+      img.src = "../images/tv_with_cover_wmenu_button.png";
       await new Promise(res => {
         img.onload = res;
         img.onerror = res;
