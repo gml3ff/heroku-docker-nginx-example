@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <title>watch now</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon_io/favicon.ico">
-  <link rel="preload" as="image" href="../images/tv_with_cover.png">
+  <link rel="preload" as="image" href="../images/tv_with_cover_wmenu_button.png">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   <script>
     (function(h,o,u,n,d) {
@@ -42,7 +42,7 @@
       width: 100vw;
       max-width: 100vw;
       aspect-ratio: 1114 / 699;
-      background-image: url('../images/tv_with_cover.png');
+      background-image: url('../images/tv_with_cover_wmenu_button.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -85,16 +85,32 @@
       pointer-events: none;
       z-index: 10;
     }
+
+    .clickable-glow {
+      position: absolute;
+      z-index: 20;
+      cursor: pointer;
+      transform-origin: top left;
+      background-image: url('../images/menu_button_default.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .clickable-glow:hover {
+      background-image: url('../images/menu_button_only.png');
+    }
   </style>
 </head>
 <body>
   <div class="tv-container" id="tvContainer">
+    <a href="../static-html/index.html" class="clickable-glow" id="glowButton" title="Click here"></a>
     <div class="scale-wrapper" id="scaleWrapper">
       <div class="video-container" id="videoContainer">
         <div id="ytplayer" loading="lazy"></div>
       </div>
     </div>
-    <img alt="TV frame" class="tv-foreground" src="../images/tv_with_cover.png" />
+    <img alt="TV frame" class="tv-foreground" src="../images/tv_with_cover_wmenu_button.png" />
   </div>
 
   <script defer src="https://www.youtube.com/iframe_api"></script>
@@ -106,7 +122,25 @@
       const actualWidth = container.clientWidth;
       const scale = actualWidth / targetWidth;
       scaleWrapper.style.setProperty('--scale', scale);
+
+      positionGlowButton();
     }
+
+    function positionGlowButton() {
+      const button = document.getElementById('glowButton');
+      const container = document.getElementById('tvContainer');
+      const baseLeft = 905;
+      const baseTop = 142;
+      const baseWidth = 42;
+      const baseHeight = 42;
+      const scale = container.clientWidth / 1114;
+
+      button.style.left = `${baseLeft * scale}px`;
+      button.style.top = `${baseTop * scale}px`;
+      button.style.width = `${baseWidth * scale}px`;
+      button.style.height = `${baseHeight * scale}px`;
+    }
+
     window.addEventListener('resize', updateScale);
     window.addEventListener('load', updateScale);
 
